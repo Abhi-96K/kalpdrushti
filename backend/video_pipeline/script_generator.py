@@ -3,10 +3,13 @@ import json
 from openai import AsyncOpenAI
 from models.schemas import VideoScript
 
-# Default NIM Llama 3 API endpoint
-OPENAI_API_KEY = os.environ.get("NVIDIA_API_KEY_LLM", "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")
-OPENAI_BASE_URL = os.environ.get("OPENAI_BASE_URL", "https://integrate.api.nvidia.com/v1")
-MODEL_NAME = os.environ.get("LLM_MODEL", "meta/llama-3.3-70b-instruct")
+# OpenAI API configuration (supports both OpenAI and custom endpoints like NVIDIA)
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+if not OPENAI_API_KEY:
+    raise ValueError("OPENAI_API_KEY environment variable is required")
+
+OPENAI_BASE_URL = os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1")
+MODEL_NAME = os.environ.get("LLM_MODEL", "gpt-3.5-turbo")
 
 client = AsyncOpenAI(
     api_key=OPENAI_API_KEY,
