@@ -7,3 +7,4 @@ httpx
 openai
 sqlalchemy
 huggingface_hub
+python-dotenv

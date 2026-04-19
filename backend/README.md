@@ -30,20 +30,37 @@ pip install fastapi uvicorn moviepy edge-tts httpx openai sqlalchemy huggingface
 
 The backend requires an LLM API key to generate scripts. Set one of these before running:
 
-**Using OpenAI (Recommended):**
+**Using OpenAI:**
 
 ```bash
+export LLM_PROVIDER="openai"
 export OPENAI_API_KEY="sk-..."
 export OPENAI_BASE_URL="https://api.openai.com/v1"
 export LLM_MODEL="gpt-3.5-turbo"  # or gpt-4, etc.
 ```
 
-**Using NVIDIA NIM (Alternative):**
+**Using Grok / xAI:**
 
 ```bash
-export OPENAI_API_KEY="nvapi-..."
-export OPENAI_BASE_URL="https://integrate.api.nvidia.com/v1"
-export LLM_MODEL="meta/llama-3.3-70b-instruct"
+export LLM_PROVIDER="grok"
+export XAI_API_KEY="xai-..."
+export LLM_MODEL="grok-4-1-fast-reasoning"
+```
+
+**Using Groq:**
+
+```bash
+export LLM_PROVIDER="groq"
+export GROQ_API_KEY="gsk_..."
+export LLM_MODEL="llama-3.3-70b-versatile"
+```
+
+**Using Gemini API Free Tier:**
+
+```bash
+export LLM_PROVIDER="gemini"
+export GEMINI_API_KEY="..."
+export LLM_MODEL="gemini-2.5-flash"
 ```
 
 ### Run the Server

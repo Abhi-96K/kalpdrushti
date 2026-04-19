@@ -1,18 +1,84 @@
 import os
 import json
+from dotenv import load_dotenv
 from openai import AsyncOpenAI
+
+load_dotenv()
 from models.schemas import VideoScript
 
-# OpenAI API configuration (supports both OpenAI and custom endpoints like NVIDIA)
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
-if not OPENAI_API_KEY:
-    raise ValueError("OPENAI_API_KEY environment variable is required")
+# LLM configuration through OpenAI-compatible endpoints.
+PROVIDER_ALIASES = {
+    "xai": "grok",
+    "grok": "grok",
+    "groq": "groq",
+    "gemini": "gemini",
+    "google": "gemini",
+    "openai": "openai",
+    "custom": "custom",
+}
 
-OPENAI_BASE_URL = os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1")
-MODEL_NAME = os.environ.get("LLM_MODEL", "gpt-3.5-turbo")
+PROVIDER_DEFAULTS = {
+    "openai": {
+        "api_key_envs": ("LLM_API_KEY", "OPENAI_API_KEY"),
+        "base_url": "https://api.openai.com/v1",
+        "model": "gpt-3.5-turbo",
+    },
+    "grok": {
+        "api_key_envs": ("LLM_API_KEY", "XAI_API_KEY", "GROK_API_KEY", "OPENAI_API_KEY"),
+        "base_url": "https://api.x.ai/v1",
+        "model": "grok-4-1-fast-reasoning",
+    },
+    "groq": {
+        "api_key_envs": ("LLM_API_KEY", "GROQ_API_KEY", "OPENAI_API_KEY"),
+        "base_url": "https://api.groq.com/openai/v1",
+        "model": "llama-3.3-70b-versatile",
+    },
+    "gemini": {
+        "api_key_envs": ("LLM_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY"),
+        "base_url": "https://generativelanguage.googleapis.com/v1beta/openai/",
+        "model": "gemini-2.5-flash",
+    },
+    "custom": {
+        "api_key_envs": ("LLM_API_KEY", "OPENAI_API_KEY"),
+        "base_url": None,
+        "model": None,
+    },
+}
+
+
+def _first_env(env_names):
+    for env_name in env_names:
+        value = os.environ.get(env_name)
+        if value:
+            return value
+    return None
+
+
+LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "openai").strip().lower()
+LLM_PROVIDER = PROVIDER_ALIASES.get(LLM_PROVIDER, LLM_PROVIDER)
+if LLM_PROVIDER not in PROVIDER_DEFAULTS:
+    valid_providers = ", ".join(sorted(PROVIDER_DEFAULTS))
+    raise ValueError(f"Unsupported LLM_PROVIDER '{LLM_PROVIDER}'. Use one of: {valid_providers}")
+
+provider_config = PROVIDER_DEFAULTS[LLM_PROVIDER]
+API_KEY = _first_env(provider_config["api_key_envs"])
+if not API_KEY:
+    env_names = ", ".join(provider_config["api_key_envs"])
+    raise ValueError(f"LLM provider '{LLM_PROVIDER}' requires one of these environment variables: {env_names}")
+
+OPENAI_BASE_URL = os.environ.get("LLM_BASE_URL")
+if not OPENAI_BASE_URL and LLM_PROVIDER in ("openai", "custom"):
+    OPENAI_BASE_URL = os.environ.get("OPENAI_BASE_URL")
+OPENAI_BASE_URL = OPENAI_BASE_URL or provider_config["base_url"]
+if not OPENAI_BASE_URL:
+    raise ValueError("Custom LLM provider requires LLM_BASE_URL or OPENAI_BASE_URL")
+
+MODEL_NAME = os.environ.get("LLM_MODEL") or provider_config["model"]
+if not MODEL_NAME:
+    raise ValueError("Custom LLM provider requires LLM_MODEL")
 
 client = AsyncOpenAI(
-    api_key=OPENAI_API_KEY,
+    api_key=API_KEY,
     base_url=OPENAI_BASE_URL
 )
 
