@@ -33,4 +33,9 @@ The user interface for Kalpdrushti AI, built with React and Vite. It provides a 
    ```
 
 ## 🔗 Connection to Backend
-By default, the frontend assumes the FastAPI backend is running locally at `http://localhost:8000`. You can configure this in the API service layers if a different URL is required for production deployment.
+The frontend reads the backend address from `VITE_API_URL` at build time.
+
+- Local development: leave `VITE_API_URL` unset and the frontend will use `http://localhost:8000`.
+- Production deployment: set `VITE_API_URL=https://kalpdrushti.onrender.com` in Vercel or your hosting environment.
+
+To use this locally, copy `frontend/.env.example` to `frontend/.env` and update the backend URL if needed.
