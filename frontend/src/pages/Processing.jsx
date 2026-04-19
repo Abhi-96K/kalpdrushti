@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CheckCircle2, Circle, Loader2, AlertCircle, XCircle } from 'lucide-react';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 const PIPELINE_STEPS = [
   { id: 'pending', label: 'Initializing Request' },
   { id: 'generating_script', label: 'Writing AI Script & Scenes' },
@@ -23,7 +25,7 @@ export default function Processing() {
 
     const pollStatus = async () => {
       try {
-        const res = await fetch(`http://localhost:8000/videos/${id}`);
+        const res = await fetch(`${API_BASE}/videos/${id}`);
         if (!res.ok) throw new Error('Failed to fetch status');
 
         const data = await res.json();
@@ -61,7 +63,7 @@ export default function Processing() {
   const handleCancel = async () => {
     setIsCancelling(true);
     try {
-      await fetch(`http://localhost:8000/abort/${id}`, { method: 'POST' });
+      await fetch(`${API_BASE}/abort/${id}`, { method: 'POST' });
       setStatus('aborted');
     } catch (err) {
       console.error("Failed to cancel job", err);

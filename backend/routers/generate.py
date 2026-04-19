@@ -22,6 +22,7 @@ async def generate_video(
     series_name: str = Form(None),
     file: UploadFile = File(None),
     aspect_ratio: str = Form("9:16"),
+    use_real_video: bool = Form(False),
     db: Session = Depends(get_db)
 ):
     """
@@ -31,13 +32,10 @@ async def generate_video(
 
     file_path = None
     if file:
-        if file.content_type and not file.content_type.startswith("image/"):
-            raise HTTPException(status_code=400, detail="Only image uploads are supported as visual references.")
-
         os.makedirs("../media/uploads", exist_ok=True)
         # get extension
-        ext = os.path.splitext(file.filename or "")[1].lower()
-        if ext not in {".jpg", ".jpeg", ".png", ".webp"}:
+        ext = os.path.splitext(file.filename)[1]
+        if not ext:
             ext = ".png" # default
         file_path = f"../media/uploads/{video_id}{ext}"
         with open(file_path, "wb") as buffer:
@@ -56,7 +54,7 @@ async def generate_video(
     db.refresh(db_request)
 
     # Start background generation job
-    background_tasks.add_task(run_pipeline, video_id, prompt, db, file_path, voice, series_name, aspect_ratio)
+    background_tasks.add_task(run_pipeline, video_id, prompt, db, file_path, voice, series_name, aspect_ratio, use_real_video)
 
     return VideoStatusResponse(
         id=db_request.id,

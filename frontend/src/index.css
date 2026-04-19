@@ -85,10 +85,11 @@ body {
 
 .bg-aurora {
   position: absolute;
-  filter: blur(120px);
+  /* Removed heavy filter: blur() for performance. The radial gradients are already soft. */
   opacity: 0.45; /* Perfect balance: subdued but visible */
   border-radius: 50%;
   pointer-events: none;
+  will-change: transform, opacity;
 }
 
 /* Green Aurora */
@@ -154,7 +155,7 @@ p { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 1.5rem; }
   -webkit-text-fill-color: transparent;
   background-clip: text;
   display: inline-block;
-  animation: shimmer 5s linear infinite;
+  /* Removed animation: shimmer for performance (background-position animation on clipped text is notoriously laggy) */
 }
 
 .text-gradient-cool {
@@ -186,13 +187,14 @@ p { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 1.5rem; }
 
 .glass-panel {
   background: var(--glass-bg);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
   border-top: 1px solid rgba(255, 255, 255, 0.12); /* Brighter rim light */
   border-radius: var(--radius-xl);
   box-shadow: 0 25px 50px rgba(0,0,0,0.5);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
 .glass-panel:hover {
@@ -240,18 +242,19 @@ p { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 1.5rem; }
 .btn-premium::after {
   content: "";
   position: absolute;
-  top: 0; left: -100%;
+  top: 0; left: 0;
   width: 50%; height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  transform: skewX(-20deg);
+  transform: translateX(-200%) skewX(-20deg);
   transition: all 0.6s ease;
   animation: shimmerBtn 4s infinite 2s;
+  will-change: transform;
 }
 
 @keyframes shimmerBtn {
-  0% { left: -100%; }
-  20% { left: 200%; }
-  100% { left: 200%; }
+  0% { transform: translateX(-200%) skewX(-20deg); }
+  20% { transform: translateX(400%) skewX(-20deg); }
+  100% { transform: translateX(400%) skewX(-20deg); }
 }
 
 .btn-premium:hover {
@@ -260,7 +263,7 @@ p { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 1.5rem; }
 }
 
 .btn-premium:hover::after {
-  left: 200%;
+  /* Effect handled by animation */
 }
 
 .btn-premium:active {
@@ -381,8 +384,8 @@ textarea.input-field {
 
 .header-glass {
   background: rgba(10, 11, 16, 0.65);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--glass-border);
   border-top: 1px solid rgba(255,255,255,0.15);
   border-radius: var(--radius-pill);
@@ -453,7 +456,7 @@ textarea.input-field {
   border: 1px solid rgba(255,255,255,0.1);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  backdrop-filter: blur(10px);
+  /* Removed backdrop-filter to prevent layer explosion and lag */
 }
 
 .badge-success { color: #34d399; background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }

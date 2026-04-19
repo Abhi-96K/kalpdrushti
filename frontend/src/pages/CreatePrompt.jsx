@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Wand2, ImagePlus, X, MonitorPlay, Smartphone, Lightbulb, PenTool, RadioTower } from 'lucide-react';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 export default function CreatePrompt() {
   const [prompt, setPrompt] = useState('');
   const [voice, setVoice] = useState('en-US-ChristopherNeural');
@@ -12,6 +14,7 @@ export default function CreatePrompt() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [useRealVideo, setUseRealVideo] = useState(false);
 
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -65,16 +68,16 @@ export default function CreatePrompt() {
       if (file) formData.append('file', file);
       formData.append('voice', voice);
       formData.append('aspect_ratio', aspectRatio);
+      formData.append('use_real_video', useRealVideo.toString());
       if (seriesName.trim()) formData.append('series_name', seriesName.trim());
 
-      const response = await fetch('http://localhost:8000/generate', {
+      const response = await fetch(`${API_BASE}/generate`, {
         method: 'POST',
         body: formData
       });
 
       if (!response.ok) {
-        const payload = await response.json().catch(() => null);
-        throw new Error(payload?.detail || 'Failed to start generation');
+        throw new Error('Failed to start generation');
       }
 
       const data = await response.json();
@@ -147,7 +150,7 @@ export default function CreatePrompt() {
                 onClick={() => fileInputRef.current.click()}
                 className="hover-glow"
               >
-                <input type="file" hidden ref={fileInputRef} onChange={handleFileChange} accept="image/*" />
+                <input type="file" hidden ref={fileInputRef} onChange={handleFileChange} accept="image/*,video/*" />
                 {file ? (
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', position: 'relative', zIndex: 2 }}>
                     {previewUrl && (
@@ -197,6 +200,22 @@ export default function CreatePrompt() {
                   <div style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--text-secondary)' }}>▼</div>
                 </div>
               </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <input
+                  type="checkbox"
+                  checked={useRealVideo}
+                  onChange={(e) => setUseRealVideo(e.target.checked)}
+                  disabled={isLoading}
+                  style={{ width: '18px', height: '18px' }}
+                />
+                Enable AI Video Generation (Beta)
+              </label>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: '0.5rem 0 0 0' }}>
+                Use Pollinations AI to generate real video scenes with motion instead of synthetic camera movements. May take longer but provides more natural motion.
+              </p>
             </div>
 
             <div className="form-group">

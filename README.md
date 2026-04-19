@@ -4,16 +4,16 @@ Kalpdrushti is a full-stack AI web platform that converts a text prompt into a s
 
 ## 🚀 Features
 - **Prompt to Video:** Generate full videos from a single text prompt.
-- **AI Scripting:** Uses an OpenAI-compatible LLM endpoint to break your prompt into structured scenes.
+- **AI Scripting:** Uses Groq/Llama-3 to automatically break your prompt into structured scenes.
 - **AI Image Generation:** Seamlessly integrates with Pollinations AI to generate high-quality visual frames.
-- **Voice & Subtitles:** Automates voiceovers with synchronized subtitles using `edge-tts`.
-- **Polished UI:** A responsive React frontend for creating, tracking, and replaying generated videos.
+- **Voice & Subtitles:** Automates voiceovers with perfectly synced VTT subtitles using `edge-tts`.
+- **Beautiful UI:** A premium, glassmorphism-inspired React frontend for creating and managing your generated content.
 
 ## 🛠 Technology Stack
 - **Frontend**: React (Vite), Vanilla CSS (Custom Design System, Glassmorphism), `lucide-react`
 - **Backend**: FastAPI, SQLAlchemy (SQLite3), Python `asyncio`
 - **AI Pipeline**:
-  - **Scripting**: OpenAI-compatible API client, configured by environment variables.
+  - **Scripting**: OpenAI API Client pointing to **Groq** endpoints (`llama-3.3-70b-versatile`).
   - **Images**: **Pollinations AI** (Free, fast, no auth token needed).
   - **Voice & Subtitles**: `edge-tts` (Free, Open-Source Microsoft Edge TTS interface).
   - **Video Assembly**: `MoviePy` with structured FFmpeg processing.
@@ -40,7 +40,7 @@ kalpdrushti/
 ### 1. Requirements
 Ensure you have installed:
 - Node.js (v18+)
-- Python 3.9+
+- Python 3.9+ 
 - **FFmpeg** (Required by MoviePy for video rendering). Must be accessible in your system path.
 
 ### 2. Backend Setup
@@ -54,16 +54,10 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 # Install requirements
 pip install fastapi uvicorn moviepy edge-tts httpx openai sqlalchemy huggingface_hub
 
-# Export necessary environment variables
-# Option A: NVIDIA NIM
-export NVIDIA_API_KEY_LLM="your-nvidia-api-key"
-export OPENAI_BASE_URL="https://integrate.api.nvidia.com/v1"
-export LLM_MODEL="meta/llama-3.3-70b-instruct"
-
-# Option B: Groq or another OpenAI-compatible provider
-# export OPENAI_API_KEY="your-provider-api-key"
-# export OPENAI_BASE_URL="https://api.groq.com/openai/v1"
-# export LLM_MODEL="llama-3.3-70b-versatile"
+# Export necessary environment variables (Use a free Groq API Key)
+export OPENAI_API_KEY="your-groq-api-key"
+export OPENAI_BASE_URL="https://api.groq.com/openai/v1"
+export LLM_MODEL="llama-3.3-70b-versatile"
 ```
 
 ### 3. Frontend Setup
@@ -88,8 +82,15 @@ uvicorn main:app --reload --port 8000
 
 **Terminal 2 (Frontend - Vite/React)**:
 ```bash
-cd frontend
-npm run dev
+c
 ```
 
-Navigate to `http://localhost:5173` in your browser. Enter a creative prompt and start a generation job.
+Navigate to `http://localhost:5173` in your browser. Enter a creative prompt, and watch your video get generated!
+
+
+
+
+
+
+
+generate the video of a boy named as abhirath who is very smart looking & curious about his future & writing a story of sambhaji maharaj on paper the boy is handsome good loooking attractive & telling about the story which is going to be uploaded on youtube other platformi 

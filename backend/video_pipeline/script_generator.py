@@ -4,22 +4,25 @@ from openai import AsyncOpenAI
 from models.schemas import VideoScript
 
 # Default NIM Llama 3 API endpoint
-OPENAI_API_KEY = os.environ.get("NVIDIA_API_KEY_LLM") or os.environ.get("OPENAI_API_KEY")
+OPENAI_API_KEY = os.environ.get("NVIDIA_API_KEY_LLM", "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")
 OPENAI_BASE_URL = os.environ.get("OPENAI_BASE_URL", "https://integrate.api.nvidia.com/v1")
 MODEL_NAME = os.environ.get("LLM_MODEL", "meta/llama-3.3-70b-instruct")
 
-client = AsyncOpenAI(api_key=OPENAI_API_KEY, base_url=OPENAI_BASE_URL) if OPENAI_API_KEY else None
+client = AsyncOpenAI(
+    api_key=OPENAI_API_KEY,
+    base_url=OPENAI_BASE_URL
+)
 
 SYSTEM_PROMPT = """
 You are a highly creative writer and director for short videos.
-The user will give you a prompt. You must convert it into a structured sequence of scenes. Keep the story tight: use 4-7 scenes for most short videos, and only use more when the prompt genuinely needs it.
+The user will give you a prompt. You must convert it into a structured sequence of scenes. Generate as many scenes as needed to fully cover the topic comprehensively (usually between 3 and 12 scenes depending on the topic length).
 
 YOUR INSTRUCTIONS:
 1. AUDIO TARGET LANGUAGE: The narration *MUST ENTIRELY BE WRITTEN* in the '{language}' language! The image settings/actions MUST REMAIN IN ENGLISH.
 2. EDUCATIONAL/CODING TOPICS: If the prompt is teaching programming (e.g. Java, Python) or tech concepts, YOU MUST:
    - Ensure the 'setting' and 'action' explicitly describe computer screens, IDEs, code editors, and terminal windows in a realistic, non-animated photography style.
-   - Include real code snippets in the 'action' or 'setting' for context, but do not depend on the image model to render tiny readable text.
-   - Visualize expected output as large, simple screens or presenter gestures. Put exact explanations and wording in narration.
+   - You MUST include actual real code snippets in the 'action' or 'setting' (e.g. "Screen showing Java code: 'public class Main...'").
+   - You MUST visualize the expected output (e.g. "Terminal output displays 'Hello World'").
 3. Create highly engaging, cinematic scene flows.
 
 Respond ONLY with valid JSON using the exact following schema:
@@ -40,10 +43,6 @@ async def generate_script(prompt: str, previous_context: str = None, language: s
     Calls the LLM to generate a structured script from a text prompt.
     Returns a Pydantic VideoScript object.
     """
-    if client is None:
-        raise RuntimeError(
-            "Missing LLM API key. Set NVIDIA_API_KEY_LLM or OPENAI_API_KEY before starting the backend."
-        )
 
     system_prompt = SYSTEM_PROMPT.replace("{language}", language)
     if previous_context:
@@ -56,8 +55,8 @@ async def generate_script(prompt: str, previous_context: str = None, language: s
             {"role": "user", "content": f"Create a video script for this prompt: {prompt}"}
         ],
         response_format={ "type": "json_object" },
-        temperature=0.65,
-        max_tokens=3000
+        temperature=0.7,
+        max_tokens=1500
     )
 
 

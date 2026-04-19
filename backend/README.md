@@ -4,10 +4,10 @@ The robust orchestration engine behind Kalpdrushti AI, built with FastAPI and Py
 
 ## 🧠 AI Pipeline Modules
 The `video_pipeline/` directory is the core of this service:
-1. `script_generator.py`: Connects to an OpenAI-compatible LLM endpoint to generate a highly structured JSON script from a prompt.
+1. `script_generator.py`: Connects via OpenAI API format to Groq (`llama-3.3-70b-versatile`) to generate a highly structured JSON script from a prompt.
 2. `image_generator.py`: asynchronously requests Pollinations AI to render cinematic images defined in the JSON script.
-3. `voice_generator.py`: Uses `edge-tts` to convert script lines into high-quality `.mp3` narrated audio, also outputting synchronized `.srt` subtitles.
-4. `video_builder.py`: Uses `MoviePy` and `FFmpeg` to stitch generated images and audio, burn readable subtitles into the video, mix background music, and output the final `.mp4` file.
+3. `voice_generator.py`: Uses `edge-tts` to convert script lines into high-quality `.mp3` narrated audio, also outputting word-level `.vtt` subtitles.
+4. `video_builder.py`: Uses `MoviePy` and `FFmpeg` to stitch the generated `.jpg` and `.mp3` files, overlays the `.vtt` files synced precisely to the audio, and outputs the final `.mp4` video.
 
 ## 📦 Requirements & Database
 - The application uses `SQLAlchemy` with a local `SQLite` (`kalpadrushti.db`) for tracking user job statuses asynchronously.
@@ -23,17 +23,11 @@ pip install fastapi uvicorn moviepy edge-tts httpx openai sqlalchemy huggingface
 ```
 
 ### Environment Configuration
-The backend needs an OpenAI-compatible LLM endpoint for text processing. You must export one of these configurations before running:
+The backend depends heavily on Groq for text processing. You must export the configuration before running:
 ```bash
-# Option A: NVIDIA NIM
-export NVIDIA_API_KEY_LLM="your-nvidia-api-key"
-export OPENAI_BASE_URL="https://integrate.api.nvidia.com/v1"
-export LLM_MODEL="meta/llama-3.3-70b-instruct"
-
-# Option B: Groq or another OpenAI-compatible provider
-# export OPENAI_API_KEY="your-provider-api-key"
-# export OPENAI_BASE_URL="https://api.groq.com/openai/v1"
-# export LLM_MODEL="llama-3.3-70b-versatile"
+export OPENAI_API_KEY="your-groq-api-key"
+export OPENAI_BASE_URL="https://api.groq.com/openai/v1"
+export LLM_MODEL="llama-3.3-70b-versatile"
 ```
 
 ### Run the Server

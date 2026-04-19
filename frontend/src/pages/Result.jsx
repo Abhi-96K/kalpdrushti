@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Download, Share2, CornerUpLeft } from 'lucide-react';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 export default function Result() {
   const { id } = useParams();
   const [videoData, setVideoData] = useState(null);
@@ -11,7 +13,7 @@ export default function Result() {
   useEffect(() => {
     const fetchVideo = async () => {
       try {
-        const res = await fetch(`http://localhost:8000/videos/${id}`);
+        const res = await fetch(`${API_BASE}/videos/${id}`);
         if (!res.ok) throw new Error('Video not found');
 
         const data = await res.json();
@@ -46,7 +48,7 @@ export default function Result() {
   // Fallback direct URL if the backend API isn't exactly mapping it, assuming structure:
   // we mounted static files to /media in FastAPI
   const videoUrl = videoData.video_url || `/media/videos/${id}.mp4`;
-  const absoluteVideoUrl = `http://localhost:8000${videoUrl}`;
+  const absoluteVideoUrl = `${API_BASE}${videoUrl}`;
 
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2rem' }}>

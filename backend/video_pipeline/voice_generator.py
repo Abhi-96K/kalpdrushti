@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 async def generate_single_voice(text: str, audio_path: str, subtitle_path: str, voice: str = "en-US-ChristopherNeural"):
     """
     Generates an audio file from text using edge-tts,
-    and also generates an SRT subtitle file to sync with it.
+    and also generates a raw VTT subtitle file to sync with it.
     """
     communicate = edge_tts.Communicate(text, voice)
 

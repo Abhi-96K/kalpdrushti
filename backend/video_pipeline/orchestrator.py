@@ -33,7 +33,7 @@ def update_status(db: Session, video_id: str, status: str, error: str = None, vi
             db_obj.video_url = video_url
         db.commit()
 
-async def run_pipeline(video_id: str, prompt: str, db: Session, file_path: str = None, voice: str = "en-US-ChristopherNeural", series_name: str = None, aspect_ratio: str = "9:16"):
+async def run_pipeline(video_id: str, prompt: str, db: Session, file_path: str = None, voice: str = "en-US-ChristopherNeural", series_name: str = None, aspect_ratio: str = "9:16", use_real_video: bool = False):
     """
     Main asynchronous pipeline orchestrator.
     Executes: Script -> Images -> Voice -> Final Video Assembly
@@ -110,7 +110,7 @@ async def run_pipeline(video_id: str, prompt: str, db: Session, file_path: str =
         logger.info(f"[{video_id}] Assembling final MP4 with cinematic motion...")
         # MoviePy can block the async event loop if run directly, so we use asyncio.to_thread
         final_video_path = await asyncio.to_thread(
-            build_video, video_id, script_data, image_paths, voice_data
+            build_video, video_id, script_data, image_paths, voice_data, use_real_video
         )
 
         # --- Finalize ---
