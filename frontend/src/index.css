@@ -397,6 +397,7 @@ textarea.input-field {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
 }
 
 .brand-icon {
@@ -409,8 +410,12 @@ textarea.input-field {
 
 .nav-links {
   display: flex;
-  gap: 2rem;
+  gap: 0.35rem;
   align-items: center;
+  padding: 0.35rem;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius-pill);
+  background: rgba(255,255,255,0.035);
 }
 
 .nav-link {
@@ -418,12 +423,55 @@ textarea.input-field {
   text-decoration: none;
   font-weight: 500;
   font-size: 0.95rem;
-  transition: color 0.2s, transform 0.2s;
+  transition: color 0.2s, transform 0.2s, background 0.2s, border-color 0.2s;
 }
 
 .nav-link:hover {
   color: white;
   transform: translateY(-1px);
+}
+
+.nav-link-pill {
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  line-height: 1;
+}
+
+.nav-link-pill:hover,
+.nav-link-pill.active {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.12);
+  color: white;
+}
+
+.nav-link-pill.active {
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.12), 0 6px 18px rgba(0,0,0,0.18);
+}
+
+.nav-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.nav-action-link {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 0.55rem 0.85rem;
+}
+
+.nav-action-link:hover {
+  background: rgba(255,255,255,0.08);
+  color: white;
 }
 
 .nav-social {

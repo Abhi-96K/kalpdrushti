@@ -1,4 +1,4 @@
-import { Github, Instagram, Heart, Film, ArrowRight } from 'lucide-react';
+import { Heart, Film, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Footer() {
@@ -20,39 +20,36 @@ export default function Footer() {
                 <Film size={18} color="white" />
               </div>
               <h2 style={{ fontSize: '1.25rem', margin: 0, color: 'white', fontWeight: 800 }}>
-                Kalpadrushti <span className="text-gradient">AI</span>
+                Kalpdrushti <span className="text-gradient">AI</span>
               </h2>
             </Link>
             <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)' }}>
               The future of short-form storytelling. Instantly transform your ideas into cinematic,
               narrated videos with intelligent scene generation.
             </p>
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
-              <a href="https://github.com/abhi.96k" target="_blank" rel="noopener noreferrer" className="nav-social hover-lift">
-                <Github size={20} />
-              </a>
-              <a href="https://instagram.com/dev.abhirath" target="_blank" rel="noopener noreferrer" className="nav-social hover-lift">
-                <Instagram size={20} />
-              </a>
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
+              <Link to="/about" className="nav-link">About</Link>
+              <Link to="/premium" className="nav-link">Premium</Link>
+              <Link to="/profile" className="nav-link">Profile</Link>
             </div>
           </div>
 
           {/* Nav Column 1 */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <h4 style={{ color: 'white', fontSize: '1rem', marginBottom: '0.5rem' }}>Product</h4>
+            <Link to="/about" className="nav-link">About Platform</Link>
+            <Link to="/premium" className="nav-link">Premium Plans</Link>
             <Link to="/create" className="nav-link">AI Studio</Link>
             <Link to="/dashboard" className="nav-link">Video Gallery</Link>
-            <span className="nav-link" style={{ opacity: 0.5, cursor: 'not-allowed' }}>Script Builder</span>
-            <span className="nav-link" style={{ opacity: 0.5, cursor: 'not-allowed' }}>Voice Synthesis</span>
           </div>
 
           {/* Nav Column 2 */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <h4 style={{ color: 'white', fontSize: '1rem', marginBottom: '0.5rem' }}>Resources</h4>
-            <span className="nav-link" style={{ opacity: 0.5, cursor: 'not-allowed' }}>Documentation</span>
-            <span className="nav-link" style={{ opacity: 0.5, cursor: 'not-allowed' }}>Prompt Guide</span>
-            <span className="nav-link" style={{ opacity: 0.5, cursor: 'not-allowed' }}>API Access</span>
-            <span className="nav-link" style={{ opacity: 0.5, cursor: 'not-allowed' }}>Community</span>
+            <Link to="/profile" className="nav-link">Creator Profile</Link>
+            <Link to="/dashboard" className="nav-link">Project Dashboard</Link>
+            <Link to="/auth" className="nav-link">Account Access</Link>
+            <Link to="/create" className="nav-link">Prompt Studio</Link>
           </div>
 
           {/* Newsletter Column */}
@@ -87,7 +84,7 @@ export default function Footer() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
             <span>Designed & Built with</span>
             <Heart size={14} className="text-gradient" />
-            <span>for <span style={{ color: 'white', fontWeight: 600 }}>Kalpadrushti AI</span> &copy; 2026</span>
+            <span>for <span style={{ color: 'white', fontWeight: 600 }}>Kalpdrushti AI</span> &copy; 2026</span>
           </div>
           <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.85rem' }}>
             <span className="nav-link">Privacy Policy</span>

@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from routers import generate, videos
+from routers import generate, payments, videos
 
 app = FastAPI(title="Kalpadrushti AI: Video Generator API")
 
@@ -29,6 +29,7 @@ app.mount("/media", StaticFiles(directory="../media"), name="media")
 
 # Include Routers
 app.include_router(generate.router)
+app.include_router(payments.router)
 app.include_router(videos.router)
 
 @app.get("/")

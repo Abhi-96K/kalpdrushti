@@ -6,5 +6,7 @@ edge-tts
 httpx
 openai
 sqlalchemy
+stripe
 huggingface_hub
 python-dotenv
+pillow

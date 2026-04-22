@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Film, Clock, Play, Plus, Search, Filter } from 'lucide-react';
+import { Film, Clock, Play, Plus, Search } from 'lucide-react';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 

@@ -22,6 +22,7 @@ async def generate_video(
     series_name: str = Form(None),
     file: UploadFile = File(None),
     aspect_ratio: str = Form("9:16"),
+    duration: str = Form("Medium (~30s)"),
     use_real_video: bool = Form(False),
     db: Session = Depends(get_db)
 ):
@@ -54,7 +55,7 @@ async def generate_video(
     db.refresh(db_request)
 
     # Start background generation job
-    background_tasks.add_task(run_pipeline, video_id, prompt, db, file_path, voice, series_name, aspect_ratio, use_real_video)
+    background_tasks.add_task(run_pipeline, video_id, prompt, db, file_path, voice, series_name, aspect_ratio, duration, use_real_video)
 
     return VideoStatusResponse(
         id=db_request.id,

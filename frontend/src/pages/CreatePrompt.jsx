@@ -8,6 +8,7 @@ export default function CreatePrompt() {
   const [prompt, setPrompt] = useState('');
   const [voice, setVoice] = useState('en-US-ChristopherNeural');
   const [aspectRatio, setAspectRatio] = useState('9:16');
+  const [duration, setDuration] = useState('Medium (~30s)');
   const [seriesName, setSeriesName] = useState('');
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -68,6 +69,7 @@ export default function CreatePrompt() {
       if (file) formData.append('file', file);
       formData.append('voice', voice);
       formData.append('aspect_ratio', aspectRatio);
+      formData.append('duration', duration);
       formData.append('use_real_video', useRealVideo.toString());
       if (seriesName.trim()) formData.append('series_name', seriesName.trim());
 
@@ -173,7 +175,7 @@ export default function CreatePrompt() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '2rem' }}>
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label" htmlFor="voice">Narration Model</label>
                 <div style={{ position: 'relative' }}>
@@ -196,6 +198,18 @@ export default function CreatePrompt() {
                     <option value="9:16">Vertical 9:16 (Shorts/Reels)</option>
                     <option value="16:9">Landscape 16:9 (YouTube)</option>
                     <option value="1:1">Square 1:1 (Instagram)</option>
+                  </select>
+                  <div style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--text-secondary)' }}>▼</div>
+                </div>
+              </div>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label" htmlFor="duration">Target Duration</label>
+                <div style={{ position: 'relative' }}>
+                  <select id="duration" value={duration} onChange={(e) => setDuration(e.target.value)} className="input-field" disabled={isLoading} style={{ appearance: 'none', paddingRight: '2.5rem' }}>
+                    <option value="Short (~15s)">Short (~15s)</option>
+                    <option value="Medium (~30s)">Medium (~30s)</option>
+                    <option value="Long (~60s)">Long (~60s)</option>
                   </select>
                   <div style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--text-secondary)' }}>▼</div>
                 </div>

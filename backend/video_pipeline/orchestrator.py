@@ -33,7 +33,7 @@ def update_status(db: Session, video_id: str, status: str, error: str = None, vi
             db_obj.video_url = video_url
         db.commit()
 
-async def run_pipeline(video_id: str, prompt: str, db: Session, file_path: str = None, voice: str = "en-US-ChristopherNeural", series_name: str = None, aspect_ratio: str = "9:16", use_real_video: bool = False):
+async def run_pipeline(video_id: str, prompt: str, db: Session, file_path: str = None, voice: str = "en-US-ChristopherNeural", series_name: str = None, aspect_ratio: str = "9:16", duration: str = "Medium (~30s)", use_real_video: bool = False):
     """
     Main asynchronous pipeline orchestrator.
     Executes: Script -> Images -> Voice -> Final Video Assembly
@@ -65,7 +65,7 @@ async def run_pipeline(video_id: str, prompt: str, db: Session, file_path: str =
         else:
             target_lang = "English"
 
-        script_data = await generate_script(prompt, previous_context, language=target_lang)
+        script_data = await generate_script(prompt, previous_context, language=target_lang, duration=duration)
 
         # Save script_content to DB for future memory
         db_obj = db.query(VideoRequestDB).filter(VideoRequestDB.id == video_id).first()

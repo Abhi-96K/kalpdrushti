@@ -88,11 +88,23 @@ The user will give you a prompt. You must convert it into a structured sequence 
 
 YOUR INSTRUCTIONS:
 1. AUDIO TARGET LANGUAGE: The narration *MUST ENTIRELY BE WRITTEN* in the '{language}' language! The image settings/actions MUST REMAIN IN ENGLISH.
-2. EDUCATIONAL/CODING TOPICS: If the prompt is teaching programming (e.g. Java, Python) or tech concepts, YOU MUST:
+2. VIDEO DURATION & PACING: The user requested a target duration of: {duration}. 
+   - You MUST ensure the amount of narration and number of scenes generated logically fills this time.
+   - For 'Short (~15s)', generate ~2-3 scenes and approx 35-40 words total.
+   - For 'Medium (~30s)', generate ~4-6 scenes and approx 70-80 words total.
+   - For 'Long (~60s)', generate ~8-12 scenes and approx 140-160 words total.
+3. EDUCATIONAL/CODING TOPICS: If the prompt is teaching programming (e.g. Java, Python) or tech concepts, YOU MUST:
    - Ensure the 'setting' and 'action' explicitly describe computer screens, IDEs, code editors, and terminal windows in a realistic, non-animated photography style.
    - You MUST include actual real code snippets in the 'action' or 'setting' (e.g. "Screen showing Java code: 'public class Main...'").
    - You MUST visualize the expected output (e.g. "Terminal output displays 'Hello World'").
-3. Create highly engaging, cinematic scene flows.
+   - Do NOT ask the image model to render long title cards, bullet lists, or marketing text overlays. Put educational text in narration unless it is short code visible on a realistic screen.
+3. IMAGE QUALITY DIRECTION: Every scene's setting/characters/action fields are used directly as image-generation prompts. Make them concrete, visual, and production-ready:
+   - Include camera framing, lens feel, lighting, mood, color palette, materials/textures, depth, and foreground/background details.
+   - Describe one clear cinematic frame per scene instead of abstract concepts or generic adjectives.
+   - Keep the same characters and visual style consistent across scenes unless the story intentionally changes.
+   - Avoid asking for text, labels, signs, or UI text inside the image unless the prompt is about coding or the text is essential.
+   - Do not include words like "low quality", "blurry", "cartoon", or "AI generated" except as things to avoid.
+5. Create highly engaging, cinematic scene flows.
 
 Respond ONLY with valid JSON using the exact following schema:
 {
@@ -107,13 +119,13 @@ Respond ONLY with valid JSON using the exact following schema:
 }
 """
 
-async def generate_script(prompt: str, previous_context: str = None, language: str = "English") -> VideoScript:
+async def generate_script(prompt: str, previous_context: str = None, language: str = "English", duration: str = "Medium (~30s)") -> VideoScript:
     """
     Calls the LLM to generate a structured script from a text prompt.
     Returns a Pydantic VideoScript object.
     """
 
-    system_prompt = SYSTEM_PROMPT.replace("{language}", language)
+    system_prompt = SYSTEM_PROMPT.replace("{language}", language).replace("{duration}", duration)
     if previous_context:
         system_prompt += f"\n\nIMPORTANT CONTEXT:\nThe user is creating this video as part of an ongoing series. The PREVIOUS video's script was exactly this: {previous_context}\nEnsure this new video logically continues the concepts or story without heavily repeating the previous video."
 

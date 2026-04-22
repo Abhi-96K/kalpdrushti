@@ -1,0 +1,1929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kalpdrushti AI Presentation</title>
+  <style>
+    :root{
+      --bg:#030014;
+      --bg2:#0f0728;
+      --card:rgba(20, 10, 40, 0.35);
+      --text:#ffffff;
+      --muted:#94a3b8;
+      --accent:#ec4899;
+      --accent2:#8b5cf6;
+      --accent3:#3b82f6;
+      --danger:#f43f5e;
+      --glass:none;
+      --shadow:0 22px 54px -34px rgba(0,0,0,.9);
+      --radius:32px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      height:100%;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #030014;
+      color:var(--text);
+      overflow:hidden;
+    }
+
+    .bg-grid{
+      position:fixed; inset:0; pointer-events:none; opacity:.07;
+      background-image:
+        linear-gradient(rgba(255,255,255,.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.2) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+    }
+
+    .app{
+      position:relative;
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+    }
+
+    .deck{
+      width:min(1420px, 100%);
+      height:min(92vh, 880px);
+      position:relative;
+      border-radius:40px;
+      background:rgba(255,255,255,.02);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 40px 100px rgba(139, 92, 246, 0.15), var(--shadow);
+      backdrop-filter:var(--glass);
+      overflow:hidden;
+    }
+
+    .topbar{
+      position:absolute; top:0; left:0; right:0;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:16px 22px;
+      z-index:10;
+      background:linear-gradient(to bottom, rgba(4,10,20,.72), rgba(4,10,20,.08));
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      font-weight:800; letter-spacing:.2px;
+    }
+    .brand-badge{
+      width:40px; height:40px; border-radius:14px;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      display:grid; place-items:center;
+      box-shadow:0 8px 25px rgba(124,92,255,.35);
+      font-size:18px;
+    }
+
+    .controls{
+      display:flex; gap:10px; align-items:center;
+      flex-wrap:wrap;
+    }
+    .chip{
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    button{
+      border:none; cursor:pointer; color:var(--text);
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.1);
+      padding:10px 14px; border-radius:14px; font-weight:700;
+      transition:transform .18s ease, background .18s ease, box-shadow .18s ease;
+    }
+    button:hover{ transform:translateY(-1px); background:rgba(255,255,255,.12);}
+    .primary{
+      background:linear-gradient(135deg, var(--accent), #5b7cff);
+      box-shadow:0 10px 28px rgba(124,92,255,.35);
+    }
+    .primary:hover{ background:linear-gradient(135deg, #8c74ff, #6c8bff);}
+
+    .slides{
+      position:absolute; inset:72px 0 72px 0;
+      perspective:1200px;
+    }
+
+    .slide{
+      position:absolute; inset:0;
+      padding:54px 64px 42px;
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:34px;
+      opacity:0; transform:translate3d(38px, 0, 0) rotateY(-1.6deg) scale(.985);
+      transition: opacity .28s ease, transform .28s ease;
+      pointer-events:none;
+      contain:layout paint style;
+      backface-visibility:hidden;
+      transform-style:preserve-3d;
+    }
+    .slide:not(.active):not(.is-exiting){
+      visibility:hidden;
+      content-visibility:hidden;
+    }
+    .slide.active,
+    .slide.is-exiting{
+      visibility:visible;
+      content-visibility:visible;
+      will-change:transform, opacity;
+    }
+    .slide.active{
+      opacity:1; transform:translate3d(0, 0, 0) rotateY(0deg) scale(1); pointer-events:auto;
+    }
+    .slide.is-exiting{
+      opacity:0;
+      transform:translate3d(-30px, 0, 0) rotateY(1.4deg) scale(.985);
+    }
+    .slide.single{
+      grid-template-columns:1fr;
+    }
+
+    .panel{
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.09);
+      border-radius:var(--radius);
+      padding:30px;
+      backdrop-filter: var(--glass);
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .panel::before{
+      content:"";
+      position:absolute; inset:-1px;
+      background:linear-gradient(135deg, rgba(255,255,255,.13), transparent 28%, transparent 75%, rgba(255,255,255,.08));
+      pointer-events:none;
+    }
+
+    .eyebrow{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.09);
+      color:#d9e8ff; font-size:13px; font-weight:700;
+      margin-bottom:18px;
+    }
+    .eyebrow .dot{
+      width:8px; height:8px; border-radius:50%;
+      background:linear-gradient(135deg, var(--accent2), var(--accent3));
+      box-shadow:0 0 14px rgba(0,212,255,.75);
+    }
+
+    h1{
+      font-size:clamp(2rem, 3.5vw, 4.3rem);
+      line-height:1.02;
+      margin:0 0 14px;
+      letter-spacing:-.04em;
+      font-weight:900;
+    }
+    h2{
+      font-size:clamp(1.6rem, 2.4vw, 2.7rem);
+      line-height:1.08;
+      margin:0 0 12px;
+      letter-spacing:-.03em;
+    }
+    p.lead{
+      color:var(--muted);
+      font-size:clamp(1rem, 1.35vw, 1.22rem);
+      line-height:1.72;
+      margin:14px 0 0;
+      max-width:900px;
+    }
+    .accent{
+      background:linear-gradient(135deg, #ffffff, #b8d7ff, #7ee8ff);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+
+    .big-num{
+      font-size:82px; font-weight:900; line-height:1; letter-spacing:-.05em;
+      background:linear-gradient(135deg, var(--accent2), #fff);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      margin-bottom:12px;
+    }
+
+    .bullets{
+      display:grid; gap:14px; margin-top:22px;
+    }
+    .bullet{
+      display:flex; gap:14px; align-items:flex-start;
+      padding:16px 18px;
+      border-radius:20px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.07);
+    }
+    .bullet-icon{
+      width:34px; height:34px; border-radius:12px; flex:0 0 34px;
+      display:grid; place-items:center;
+      background:linear-gradient(135deg, rgba(124,92,255,.28), rgba(0,212,255,.25));
+      border:1px solid rgba(255,255,255,.08);
+      font-weight:900;
+    }
+    .bullet h4{ margin:0 0 4px; font-size:16px;}
+    .bullet p{ margin:0; color:var(--muted); line-height:1.6; font-size:14px;}
+
+    .stats{
+      display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:22px;
+    }
+    .stat{
+      padding:20px; border-radius:24px;
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .stat .n{ font-size:34px; font-weight:900; margin-bottom:6px;}
+    .stat .l{ color:var(--muted); }
+
+    .flow{
+      display:flex; flex-wrap:wrap; gap:12px; margin-top:26px;
+      align-items:center;
+    }
+    .flow .node{
+      padding:14px 18px; border-radius:16px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      font-weight:700;
+    }
+    .flow .arrow{
+      color:var(--accent2); font-size:24px; font-weight:900;
+    }
+
+    .stack{
+      display:grid; gap:14px;
+    }
+    .stack-card{
+      padding:18px 20px; border-radius:20px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .stack-card h4{ margin:0 0 8px; font-size:18px;}
+    .stack-card p{ margin:0; color:var(--muted); line-height:1.65;}
+
+    .codebox{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background:#050b16;
+      border:1px solid rgba(255,255,255,.08);
+      color:#d8e8ff;
+      padding:18px;
+      border-radius:20px;
+      line-height:1.8;
+      font-size:14px;
+      white-space:pre-wrap;
+      overflow:auto;
+    }
+
+    .table{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      border-radius:20px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .th,.td{
+      padding:14px 16px;
+      background:rgba(255,255,255,.04);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .th{
+      font-weight:800;
+      background:rgba(255,255,255,.08);
+    }
+    .td:nth-child(4n+3), .td:nth-child(4n+4){
+      background:rgba(255,255,255,.025);
+    }
+
+    .timeline{
+      margin-top:22px; display:grid; gap:14px;
+    }
+    .step{
+      display:grid; grid-template-columns: 48px 1fr; gap:16px; align-items:start;
+    }
+    .step .circle{
+      width:48px; height:48px; border-radius:16px;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      display:grid; place-items:center; font-weight:900;
+      box-shadow:0 10px 25px rgba(124,92,255,.25);
+    }
+    .step .text{
+      padding:14px 18px; border-radius:18px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      color:var(--muted);
+      line-height:1.65;
+    }
+    .step .text b{ color:var(--text); }
+
+    .footer{
+      position:absolute; left:0; right:0; bottom:0; z-index:10;
+      padding:14px 22px;
+      display:flex; align-items:center; justify-content:space-between;
+      background:linear-gradient(to top, rgba(4,10,20,.72), rgba(4,10,20,.08));
+      border-top:1px solid rgba(255,255,255,.06);
+    }
+    .progress-wrap{
+      width:min(320px, 42vw); height:10px; border-radius:999px;
+      background:rgba(255,255,255,.08); overflow:hidden;
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .progress{
+      height:100%; width:0%;
+      background:linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+      border-radius:999px;
+      transition:width .35s ease;
+    }
+    .pager{
+      display:flex; align-items:center; gap:12px; color:var(--muted);
+      font-weight:700;
+    }
+
+    .title-card{
+      display:grid; align-content:center; min-height:100%;
+    }
+    .hero-grid{
+      display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:16px; margin-top:26px;
+    }
+    .mini{
+      padding:18px; border-radius:22px; background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .mini h4{ margin:0 0 8px; font-size:16px;}
+    .mini p{ margin:0; color:var(--muted); line-height:1.6; font-size:14px;}
+
+    .quote{
+      font-size:clamp(1.6rem, 2.2vw, 2.7rem);
+      line-height:1.35; margin:12px 0 0; letter-spacing:-.02em;
+    }
+
+    .signature{
+      display:flex; gap:14px; align-items:center; margin-top:28px;
+      color:var(--muted);
+    }
+    .avatar{
+      width:52px; height:52px; border-radius:18px;
+      display:grid; place-items:center; font-weight:900;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+    }
+
+    .kbd{
+      padding:6px 10px; border-radius:10px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.10);
+      color:#fff; font-size:12px; font-weight:800;
+    }
+
+    @media (max-width: 980px){
+      .slide{ grid-template-columns:1fr; padding:40px 28px 30px; overflow:auto; }
+      .deck{ height:100vh; border-radius:0; }
+      .app{ padding:0; }
+      .topbar,.footer{ padding:12px 14px; }
+      .slides{ inset:70px 0 70px; }
+      .stats,.hero-grid{ grid-template-columns:1fr; }
+      .table{ grid-template-columns:1fr 1fr; }
+      .controls .chip{ display:none; }
+    }
+
+    /* Kalpdrushti AI presentation theme */
+    :root{
+      --bg:#040508;
+      --bg2:#0a0b10;
+      --card:rgba(255,255,255,.045);
+      --card-strong:rgba(255,255,255,.075);
+      --text:#ffffff;
+      --muted:#a1a1aa;
+      --accent:#8b5cf6;
+      --accent2:#ec4899;
+      --accent3:#06b6d4;
+      --success:#10b981;
+      --danger:#ef4444;
+      --glass:none;
+      --shadow:0 22px 54px -34px rgba(0,0,0,.9);
+      --radius:24px;
+    }
+
+    html,body{
+      background-color:var(--bg);
+      background-image:
+        linear-gradient(115deg, rgba(139,92,246,.18), transparent 34%),
+        linear-gradient(245deg, rgba(6,182,212,.13), transparent 36%),
+        linear-gradient(180deg, #040508 0%, #090915 54%, #05060b 100%);
+      background-size:130% 130%, 140% 140%, 100% 100%;
+      color:var(--text);
+    }
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(100deg, transparent 0 18%, rgba(16,185,129,.10) 18% 23%, transparent 23% 100%),
+        linear-gradient(150deg, transparent 0 58%, rgba(139,92,246,.17) 58% 64%, transparent 64% 100%),
+        linear-gradient(28deg, transparent 0 66%, rgba(236,72,153,.14) 66% 70%, transparent 70% 100%),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.024) 0 1px, transparent 1px 72px);
+      opacity:.64;
+    }
+    body::after{
+      content:"";
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      height:20vh;
+      pointer-events:none;
+      background:
+        linear-gradient(90deg, rgba(139,92,246,.24), rgba(236,72,153,.18), rgba(6,182,212,.22));
+      clip-path:polygon(0 52%, 19% 24%, 43% 48%, 67% 18%, 100% 42%, 100% 100%, 0 100%);
+      opacity:.38;
+    }
+
+    .bg-grid{
+      opacity:.20;
+      background-image:
+        linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+      background-size:44px 44px;
+      mask-image:linear-gradient(to bottom, black 0%, transparent 90%);
+    }
+    .app{ padding:16px; z-index:1; }
+    .deck{
+      height:min(96vh, 920px);
+      border-radius:30px;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.07), rgba(255,255,255,.025)),
+        linear-gradient(180deg, rgba(4,5,8,.94), rgba(10,11,16,.86));
+      border:1px solid rgba(255,255,255,.11);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.025),
+        0 30px 72px -42px rgba(0,0,0,1),
+        0 0 48px -34px rgba(139,92,246,.72);
+    }
+    .deck::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3), var(--success)) top/100% 7px no-repeat,
+        linear-gradient(145deg, rgba(139,92,246,.08), transparent 35%, rgba(6,182,212,.07));
+      z-index:0;
+    }
+    .deck::after{
+      content:"";
+      position:absolute;
+      top:2px;
+      left:0;
+      width:min(260px, 32vw);
+      height:3px;
+      pointer-events:none;
+      background:linear-gradient(90deg, transparent, rgba(255,255,255,.92), transparent);
+      opacity:.75;
+      transform:translate3d(-120%, 0, 0);
+      will-change:transform, opacity;
+      animation:deckSweep 5.8s cubic-bezier(.16, 1, .3, 1) infinite;
+      z-index:2;
+    }
+
+    .topbar{
+      background:rgba(10,11,16,.72);
+      border-bottom:1px solid rgba(255,255,255,.08);
+      box-shadow:0 18px 38px -30px rgba(0,0,0,.9);
+      backdrop-filter:none;
+      -webkit-backdrop-filter:none;
+    }
+    .brand{ color:var(--text); letter-spacing:.01em; }
+    .brand-badge{
+      border-radius:13px;
+      color:#fff;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow:0 12px 30px -12px rgba(139,92,246,.95), inset 0 1px 1px rgba(255,255,255,.32);
+    }
+    .chip,.kbd{
+      color:#d4d4d8;
+      background:rgba(255,255,255,.055);
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow:0 8px 22px -18px rgba(0,0,0,.9);
+    }
+    button{
+      color:#fff;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.11);
+      border-radius:13px;
+      box-shadow:0 14px 28px -24px rgba(0,0,0,.95);
+      position:relative;
+      overflow:hidden;
+    }
+    button::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(105deg, transparent 0 34%, rgba(255,255,255,.16) 45%, transparent 58%);
+      transform:translateX(-130%);
+      transition:transform .42s ease;
+    }
+    button:hover::after{ transform:translateX(130%); }
+    button:hover{ background:rgba(255,255,255,.11); }
+    .primary{
+      color:#fff;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow:0 16px 34px -18px rgba(139,92,246,.95), inset 0 1px 1px rgba(255,255,255,.28);
+    }
+    .primary:hover{ background:linear-gradient(135deg, #7c3aed, #db2777); }
+
+    .slides{ inset:70px 0 58px; z-index:1; }
+    .slide{
+      gap:26px;
+      padding:40px 56px 30px;
+    }
+    .slide::before{
+      content:"";
+      position:absolute;
+      left:34px;
+      top:34px;
+      bottom:34px;
+      width:5px;
+      border-radius:999px;
+      background:linear-gradient(180deg, var(--accent), var(--accent2), var(--accent3));
+      opacity:.78;
+      box-shadow:0 0 24px rgba(139,92,246,.42);
+    }
+    .slide.active::before{ opacity:.9; }
+
+    .panel{
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      min-width:0;
+      padding:26px;
+      contain:layout paint;
+      transform-origin:center;
+      transition:transform .32s ease, border-color .32s ease, background .32s ease;
+    }
+    .panel:hover{
+      transform:translateY(-3px);
+      border-color:rgba(255,255,255,.18);
+      background:rgba(255,255,255,.058);
+    }
+    .panel::before{
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.13), transparent 24%, transparent 72%, rgba(6,182,212,.10)),
+        linear-gradient(90deg, rgba(139,92,246,.26), rgba(236,72,153,.18), transparent 40%) top/100% 5px no-repeat;
+    }
+    .panel::after{
+      content:"";
+      position:absolute;
+      top:0;
+      bottom:0;
+      left:-42%;
+      width:34%;
+      pointer-events:none;
+      background:linear-gradient(100deg, transparent, rgba(255,255,255,.105), transparent);
+      opacity:0;
+      transform:translate3d(0, 0, 0) skewX(-14deg);
+      z-index:0;
+    }
+    .slide.is-entering .panel::after{
+      animation:panelGlint .58s cubic-bezier(.16, 1, .3, 1) .16s both;
+    }
+    .slide.is-entering .panel:nth-child(2)::after{
+      animation-delay:.24s;
+    }
+    .panel > *{
+      position:relative;
+      z-index:1;
+    }
+
+    .eyebrow{
+      color:#e0e7ff;
+      background:rgba(139,92,246,.13);
+      border:1px solid rgba(139,92,246,.24);
+      letter-spacing:.03em;
+    }
+    .eyebrow .dot{
+      position:relative;
+      background:linear-gradient(135deg, var(--accent2), var(--accent3));
+      box-shadow:0 0 0 5px rgba(139,92,246,.16), 0 0 20px rgba(6,182,212,.46);
+    }
+    .eyebrow .dot::after{
+      content:"";
+      position:absolute;
+      inset:-8px;
+      border-radius:inherit;
+      border:1px solid rgba(103,232,249,.62);
+      opacity:0;
+      transform:scale(.55);
+      pointer-events:none;
+    }
+    h1,h2{
+      color:var(--text);
+      letter-spacing:-.035em;
+    }
+    h2{
+      font-size:clamp(1.55rem, 2.1vw, 2.45rem);
+    }
+    p.lead{ color:var(--muted); line-height:1.58; }
+    .accent{
+      background:linear-gradient(90deg, #ffffff, #d8b4fe, #f0abfc, #67e8f9, #ffffff);
+      background-size:240% auto;
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .big-num{
+      color:transparent;
+      background:linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+      -webkit-background-clip:text;
+      background-clip:text;
+      letter-spacing:-.05em;
+    }
+
+    .bullet,.stack-card,.mini,.stat,.step .text,.flow .node{
+      background:rgba(255,255,255,.055);
+      border:1px solid rgba(255,255,255,.095);
+      box-shadow:0 18px 38px -34px rgba(0,0,0,.96), inset 0 1px 1px rgba(255,255,255,.055);
+    }
+    .bullets{
+      gap:12px;
+      margin-top:18px;
+    }
+    .bullet{
+      border-radius:18px;
+      border-left:4px solid rgba(139,92,246,.82);
+      padding:13px 16px;
+    }
+    .bullet h4{ font-size:15px; }
+    .bullet p{ line-height:1.45; }
+    .bullet-icon,.step .circle,.avatar{
+      color:#fff;
+      border-radius:14px;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow:0 14px 30px -16px rgba(139,92,246,.95);
+    }
+    .bullet h4,.stack-card h4,.mini h4{ color:var(--text); }
+    .bullet p,.stack-card p,.mini p,.stat .l,.step .text{ color:var(--muted); }
+
+    .stat{
+      border-radius:20px;
+      background:linear-gradient(180deg, rgba(255,255,255,.082), rgba(255,255,255,.04));
+      border-top:3px solid rgba(6,182,212,.72);
+      padding:16px;
+    }
+    .stats{
+      gap:12px;
+      margin-top:18px;
+    }
+    .stat .n{
+      color:#fff;
+      font-size:clamp(1.1rem, 1.8vw, 1.8rem);
+      letter-spacing:-.02em;
+      overflow-wrap:anywhere;
+    }
+    .stat .l{ font-size:14px; line-height:1.4; }
+    .flow .node{
+      color:var(--text);
+      border-radius:14px;
+      font-weight:800;
+      padding:12px 16px;
+    }
+    .flow .arrow{ color:var(--accent2); text-shadow:0 0 18px rgba(236,72,153,.38); }
+
+    .codebox{
+      color:#f8fafc;
+      background:rgba(5,11,22,.86);
+      border:1px solid rgba(255,255,255,.09);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.10);
+    }
+    .table{
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow:0 16px 34px -30px rgba(0,0,0,.95);
+    }
+    .th{
+      color:#fff;
+      background:linear-gradient(135deg, rgba(139,92,246,.40), rgba(236,72,153,.25));
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .td{
+      color:#d4d4d8;
+      background:rgba(255,255,255,.045);
+      border-bottom:1px solid rgba(255,255,255,.07);
+    }
+    .td:nth-child(4n+3), .td:nth-child(4n+4){
+      background:rgba(255,255,255,.028);
+    }
+    .th,.td{
+      padding:12px 14px;
+      line-height:1.25;
+      font-size:15px;
+    }
+    .timeline{
+      gap:12px;
+      margin-top:18px;
+    }
+    .step{
+      grid-template-columns:44px 1fr;
+      gap:14px;
+    }
+    .step .circle{ border-radius:16px; }
+    .step .circle{
+      width:44px;
+      height:44px;
+    }
+    .step .text{
+      padding:12px 16px;
+      line-height:1.5;
+    }
+    .step .text b{ color:var(--text); }
+    .stack{
+      gap:12px;
+    }
+    .stack-card{
+      padding:15px 18px;
+      border-radius:17px;
+    }
+    .stack-card h4{ font-size:16px; }
+    .stack-card p{ line-height:1.48; font-size:14px; }
+
+    .footer{
+      background:rgba(10,11,16,.72);
+      border-top:1px solid rgba(255,255,255,.08);
+      backdrop-filter:none;
+      -webkit-backdrop-filter:none;
+    }
+    .progress-wrap{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .progress{
+      background:linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3), var(--accent));
+      background-size:220% 100%;
+    }
+    .pager{ color:#d4d4d8; }
+
+    .title-card{
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.09), rgba(255,255,255,.035)),
+        linear-gradient(120deg, rgba(139,92,246,.13), rgba(236,72,153,.08), rgba(6,182,212,.10));
+    }
+    .hero-grid{ gap:18px; }
+    .mini{
+      border-radius:18px;
+      border-top:3px solid rgba(139,92,246,.72);
+    }
+    .quote{
+      color:#f8fafc;
+      background:linear-gradient(90deg, rgba(139,92,246,.14), rgba(6,182,212,.08));
+      border-left:5px solid var(--accent2);
+      border-radius:18px;
+      padding:18px 22px;
+      letter-spacing:-.02em;
+    }
+    .signature{ color:#d4d4d8; }
+
+    .presentation-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:20px;
+    }
+    .presentation-meta span{
+      padding:9px 13px;
+      border-radius:999px;
+      color:#f8fafc;
+      background:rgba(255,255,255,.065);
+      border:1px solid rgba(255,255,255,.11);
+      font-size:13px;
+      font-weight:800;
+      box-shadow:inset 0 1px 1px rgba(255,255,255,.08);
+    }
+    .team-board{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:14px;
+      margin-top:24px;
+    }
+    .person-card{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      min-width:0;
+      padding:16px;
+      border-radius:18px;
+      background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.045));
+      border:1px solid rgba(255,255,255,.11);
+      box-shadow:0 16px 34px -28px rgba(0,0,0,.95);
+    }
+    .person-card .initials{
+      width:46px;
+      height:46px;
+      flex:0 0 46px;
+      display:grid;
+      place-items:center;
+      border-radius:15px;
+      color:#fff;
+      font-weight:900;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow:0 12px 28px -15px rgba(236,72,153,.95);
+    }
+    .person-card h4{
+      margin:0 0 5px;
+      color:var(--text);
+      font-size:15px;
+    }
+    .person-card p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+    .cover-layout{
+      display:grid;
+      grid-template-columns:minmax(0, 1.04fr) minmax(360px, .86fr);
+      gap:30px;
+      align-items:start;
+      min-height:100%;
+    }
+    .cover-copy{
+      min-width:0;
+    }
+    .cover-copy h1{
+      font-size:clamp(2.05rem, 3.05vw, 3.15rem);
+    }
+    .cover-copy .lead{
+      font-size:clamp(.94rem, 1.02vw, 1rem);
+      line-height:1.5;
+    }
+    .cover-copy .team-board{
+      margin-top:14px;
+    }
+    .cover-copy .person-card{
+      padding:11px;
+    }
+    .cover-copy .person-card .initials{
+      width:40px;
+      height:40px;
+      flex-basis:40px;
+      border-radius:13px;
+    }
+    .cover-copy .person-card h4{
+      font-size:14px;
+    }
+    .cover-copy .person-card p{
+      font-size:12px;
+    }
+    .cover-media{
+      display:grid;
+      gap:14px;
+      align-content:start;
+      min-width:0;
+    }
+    .image-frame{
+      margin:0;
+      position:relative;
+      overflow:hidden;
+      contain:layout paint;
+      border-radius:22px;
+      background:linear-gradient(180deg, rgba(255,255,255,.095), rgba(255,255,255,.04));
+      border:1px solid rgba(255,255,255,.13);
+      box-shadow:0 24px 62px -34px rgba(0,0,0,1), inset 0 1px 1px rgba(255,255,255,.08);
+    }
+    .image-frame::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.16), transparent 22%, transparent 70%, rgba(6,182,212,.12)),
+        linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.12));
+      z-index:1;
+    }
+    .image-frame::after{
+      content:"";
+      position:absolute;
+      inset:-12% -52%;
+      pointer-events:none;
+      background:linear-gradient(105deg, transparent 38%, rgba(255,255,255,.18), transparent 62%);
+      opacity:0;
+      transform:translate3d(-30%, 0, 0) rotate(8deg);
+      z-index:1;
+    }
+    .image-frame img{
+      display:block;
+      width:100%;
+      aspect-ratio:16 / 10;
+      object-fit:cover;
+      object-position:top center;
+      opacity:.96;
+    }
+    .image-caption{
+      position:absolute;
+      left:14px;
+      right:14px;
+      bottom:14px;
+      z-index:2;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      color:#fff;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      text-shadow:0 2px 14px rgba(0,0,0,.65);
+    }
+    .image-caption span{
+      padding:7px 10px;
+      border-radius:999px;
+      background:rgba(4,5,8,.62);
+      border:1px solid rgba(255,255,255,.12);
+      backdrop-filter:none;
+      -webkit-backdrop-filter:none;
+    }
+    .hero-device{
+      transform:rotate(.7deg);
+    }
+    .studio-peek{
+      transform:rotate(-.6deg);
+    }
+    .visual-stats{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:10px;
+    }
+    .visual-stat{
+      padding:13px 12px;
+      border-radius:16px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow:inset 0 1px 1px rgba(255,255,255,.08);
+    }
+    .visual-stat b{
+      display:block;
+      color:#fff;
+      font-size:14px;
+      margin-bottom:4px;
+    }
+    .visual-stat span{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+    .slide-screenshot{
+      margin-bottom:22px;
+    }
+    .slide-screenshot img{
+      aspect-ratio:16 / 9;
+    }
+    .compact-stack{
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:12px;
+    }
+    .compact-stack .stack-card{
+      padding:15px;
+      border-radius:16px;
+    }
+    .compact-stack .stack-card h4{
+      font-size:16px;
+    }
+    .compact-stack .stack-card p{
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    @keyframes panelReveal{
+      from{ opacity:.78; transform:translate3d(0, 18px, 0) scale(.992); }
+      to{ opacity:1; transform:translate3d(0, 0, 0) scale(1); }
+    }
+    @keyframes deckSweep{
+      0%{ opacity:0; transform:translate3d(-120%, 0, 0); }
+      12%{ opacity:.72; }
+      46%{ opacity:.72; }
+      60%, 100%{ opacity:0; transform:translate3d(520%, 0, 0); }
+    }
+    @keyframes panelGlint{
+      0%{ opacity:0; transform:translate3d(0, 0, 0) skewX(-14deg); }
+      24%{ opacity:.86; }
+      100%{ opacity:0; transform:translate3d(420%, 0, 0) skewX(-14deg); }
+    }
+    @keyframes itemRise{
+      from{ opacity:.56; transform:translate3d(0, 14px, 0); }
+      to{ opacity:1; transform:translate3d(0, 0, 0); }
+    }
+    @keyframes popSettle{
+      0%{ opacity:.62; transform:translate3d(0, 9px, 0) scale(.88); }
+      62%{ opacity:1; transform:translate3d(0, -2px, 0) scale(1.055); }
+      100%{ opacity:1; transform:translate3d(0, 0, 0) scale(1); }
+    }
+    @keyframes arrowDrift{
+      0%, 100%{ opacity:.72; transform:translate3d(0, 0, 0); }
+      50%{ opacity:1; transform:translate3d(5px, 0, 0); }
+    }
+    @keyframes railBreathe{
+      0%, 100%{ opacity:.82; transform:scaleY(.94); }
+      50%{ opacity:1; transform:scaleY(1); }
+    }
+    @keyframes dotRing{
+      0%{ opacity:.58; transform:scale(.55); }
+      70%, 100%{ opacity:0; transform:scale(1.5); }
+    }
+    @keyframes iconDrift{
+      0%, 100%{ transform:translate3d(0, 0, 0) scale(1); }
+      48%{ transform:translate3d(0, -4px, 0) scale(1.035); }
+    }
+    @keyframes chipPop{
+      0%{ opacity:.68; transform:translate3d(0, 8px, 0) scale(.94); }
+      72%{ opacity:1; transform:translate3d(0, -1px, 0) scale(1.025); }
+      100%{ opacity:1; transform:translate3d(0, 0, 0) scale(1); }
+    }
+    @keyframes imageShine{
+      0%, 62%{ opacity:0; transform:translate3d(-30%, 0, 0) rotate(8deg); }
+      72%{ opacity:.78; }
+      100%{ opacity:0; transform:translate3d(74%, 0, 0) rotate(8deg); }
+    }
+    @keyframes deviceFloat{
+      0%, 100%{ transform:translate3d(0, 0, 0) rotate(.7deg); }
+      50%{ transform:translate3d(0, -8px, 0) rotate(.35deg); }
+    }
+    @keyframes studioFloat{
+      0%, 100%{ transform:translate3d(0, 0, 0) rotate(-.6deg); }
+      50%{ transform:translate3d(0, -7px, 0) rotate(-.2deg); }
+    }
+    @keyframes imageReveal{
+      from{ opacity:.78; transform:translate3d(0, 18px, 0) rotate(-.8deg) scale(.987); }
+      to{ opacity:1; transform:translate3d(0, 0, 0) rotate(.7deg) scale(1); }
+    }
+    @keyframes railEnter{
+      from{ opacity:.3; transform:scaleY(.35); }
+      to{ opacity:.9; transform:scaleY(1); }
+    }
+    @keyframes dotPop{
+      from{ transform:scale(.6); opacity:.55; }
+      to{ transform:scale(1); opacity:1; }
+    }
+    @keyframes progressKick{
+      0%{ transform:scaleY(1); }
+      45%{ transform:scaleY(1.55); }
+      100%{ transform:scaleY(1); }
+    }
+
+    .slide.is-entering::before{
+      transform-origin:center;
+      animation:railEnter .42s cubic-bezier(.16, 1, .3, 1) both;
+    }
+    .slide.is-entering .panel{
+      will-change:transform, opacity;
+      animation:panelReveal .42s cubic-bezier(.16, 1, .3, 1) both;
+    }
+    .slide.is-entering .panel:nth-child(2){
+      animation-delay:.05s;
+    }
+    .slide.is-entering .eyebrow,
+    .slide.is-entering h1,
+    .slide.is-entering h2,
+    .slide.is-entering .lead,
+    .slide.is-entering .quote,
+    .slide.is-entering .table,
+    .slide.is-entering .codebox,
+    .slide.is-entering .hero-grid,
+    .slide.is-entering .presentation-meta,
+    .slide.is-entering .team-board,
+    .slide.is-entering .visual-stats,
+    .slide.is-entering .slide-screenshot,
+    .slide.is-entering .bullet,
+    .slide.is-entering .stack-card,
+    .slide.is-entering .step,
+    .slide.is-entering .stat,
+    .slide.is-entering .person-card,
+    .slide.is-entering .visual-stat,
+    .slide.is-entering .mini,
+    .slide.is-entering .flow .node,
+    .slide.is-entering .flow .arrow{
+      animation:itemRise .34s cubic-bezier(.16, 1, .3, 1) both;
+    }
+    .slide.is-entering .eyebrow{ animation-delay:.03s; }
+    .slide.is-entering h1,
+    .slide.is-entering h2{ animation-delay:.06s; }
+    .slide.is-entering .lead,
+    .slide.is-entering .quote{ animation-delay:.10s; }
+    .slide.is-entering .table,
+    .slide.is-entering .codebox,
+    .slide.is-entering .hero-grid,
+    .slide.is-entering .presentation-meta,
+    .slide.is-entering .team-board,
+    .slide.is-entering .visual-stats,
+    .slide.is-entering .slide-screenshot{ animation-delay:.14s; }
+    .slide.is-entering .bullet:nth-child(1),
+    .slide.is-entering .stack-card:nth-child(1),
+    .slide.is-entering .step:nth-child(1),
+    .slide.is-entering .stat:nth-child(1),
+    .slide.is-entering .person-card:nth-child(1),
+    .slide.is-entering .visual-stat:nth-child(1),
+    .slide.is-entering .mini:nth-child(1){ animation-delay:.12s; }
+    .slide.is-entering .bullet:nth-child(2),
+    .slide.is-entering .stack-card:nth-child(2),
+    .slide.is-entering .step:nth-child(2),
+    .slide.is-entering .stat:nth-child(2),
+    .slide.is-entering .person-card:nth-child(2),
+    .slide.is-entering .visual-stat:nth-child(2),
+    .slide.is-entering .mini:nth-child(2){ animation-delay:.16s; }
+    .slide.is-entering .bullet:nth-child(3),
+    .slide.is-entering .stack-card:nth-child(3),
+    .slide.is-entering .step:nth-child(3),
+    .slide.is-entering .stat:nth-child(3),
+    .slide.is-entering .person-card:nth-child(3),
+    .slide.is-entering .visual-stat:nth-child(3){ animation-delay:.20s; }
+    .slide.is-entering .bullet:nth-child(4),
+    .slide.is-entering .step:nth-child(4),
+    .slide.is-entering .stat:nth-child(4){ animation-delay:.24s; }
+    .slide.is-entering .bullet:nth-child(5),
+    .slide.is-entering .step:nth-child(5),
+    .slide.is-entering .stat:nth-child(5){ animation-delay:.28s; }
+    .slide.is-entering .stat:nth-child(6){ animation-delay:.32s; }
+    .slide.is-entering .big-num,
+    .slide.is-entering .bullet-icon,
+    .slide.is-entering .step .circle,
+    .slide.is-entering .person-card .initials,
+    .slide.is-entering .visual-stat b{
+      animation:popSettle .42s cubic-bezier(.16, 1, .3, 1) both;
+    }
+    .slide.is-entering .big-num{ animation-delay:.08s; }
+    .slide.is-entering .bullet:nth-child(1) .bullet-icon,
+    .slide.is-entering .step:nth-child(1) .circle,
+    .slide.is-entering .person-card:nth-child(1) .initials,
+    .slide.is-entering .visual-stat:nth-child(1) b{ animation-delay:.16s; }
+    .slide.is-entering .bullet:nth-child(2) .bullet-icon,
+    .slide.is-entering .step:nth-child(2) .circle,
+    .slide.is-entering .person-card:nth-child(2) .initials,
+    .slide.is-entering .visual-stat:nth-child(2) b{ animation-delay:.20s; }
+    .slide.is-entering .bullet:nth-child(3) .bullet-icon,
+    .slide.is-entering .step:nth-child(3) .circle,
+    .slide.is-entering .person-card:nth-child(3) .initials,
+    .slide.is-entering .visual-stat:nth-child(3) b{ animation-delay:.24s; }
+    .slide.is-entering .bullet:nth-child(4) .bullet-icon,
+    .slide.is-entering .step:nth-child(4) .circle{ animation-delay:.28s; }
+    .slide.is-entering .bullet:nth-child(5) .bullet-icon,
+    .slide.is-entering .step:nth-child(5) .circle{ animation-delay:.32s; }
+    .slide.is-entering .presentation-meta span,
+    .slide.is-entering .image-caption span{
+      animation:chipPop .36s cubic-bezier(.16, 1, .3, 1) both;
+    }
+    .slide.is-entering .presentation-meta span:nth-child(1),
+    .slide.is-entering .image-caption span:nth-child(1){ animation-delay:.18s; }
+    .slide.is-entering .presentation-meta span:nth-child(2),
+    .slide.is-entering .image-caption span:nth-child(2){ animation-delay:.22s; }
+    .slide.is-entering .presentation-meta span:nth-child(3){ animation-delay:.26s; }
+    .slide.is-entering .image-frame{
+      will-change:transform, opacity;
+      animation:imageReveal .42s cubic-bezier(.16, 1, .3, 1) .08s both;
+    }
+    .slide.is-entering .eyebrow .dot{
+      animation:dotPop .28s cubic-bezier(.16, 1, .3, 1) .06s both;
+    }
+    .slide.active:not(.is-entering)::before{
+      transform-origin:center;
+      animation:railBreathe 2.8s ease-in-out infinite;
+    }
+    .slide.active:not(.is-entering) .eyebrow .dot::after{
+      animation:dotRing 1.7s ease-out infinite;
+    }
+    .slide.active:not(.is-entering) .bullet-icon,
+    .slide.active:not(.is-entering) .step .circle,
+    .slide.active:not(.is-entering) .person-card .initials,
+    .slide.active:not(.is-entering) .avatar{
+      animation:iconDrift 3.8s ease-in-out infinite;
+    }
+    .slide.active:not(.is-entering) .bullet:nth-child(2) .bullet-icon,
+    .slide.active:not(.is-entering) .step:nth-child(2) .circle,
+    .slide.active:not(.is-entering) .person-card:nth-child(2) .initials{ animation-delay:.25s; }
+    .slide.active:not(.is-entering) .bullet:nth-child(3) .bullet-icon,
+    .slide.active:not(.is-entering) .step:nth-child(3) .circle,
+    .slide.active:not(.is-entering) .person-card:nth-child(3) .initials{ animation-delay:.5s; }
+    .slide.active:not(.is-entering) .bullet:nth-child(4) .bullet-icon,
+    .slide.active:not(.is-entering) .step:nth-child(4) .circle{ animation-delay:.75s; }
+    .slide.active:not(.is-entering) .bullet:nth-child(5) .bullet-icon,
+    .slide.active:not(.is-entering) .step:nth-child(5) .circle{ animation-delay:1s; }
+    .slide.active:not(.is-entering) .image-frame::after{
+      animation:imageShine 5.4s cubic-bezier(.16, 1, .3, 1) infinite;
+    }
+    .slide.active:not(.is-entering) .flow .arrow{
+      animation:arrowDrift 1.6s ease-in-out infinite;
+    }
+    .slide.active:not(.is-entering) .flow .arrow:nth-of-type(4n){
+      animation-delay:.24s;
+    }
+    .slide.active:not(.is-entering) .hero-device{
+      animation:deviceFloat 7.2s ease-in-out infinite;
+    }
+    .slide.active:not(.is-entering) .studio-peek{
+      animation:studioFloat 7.6s ease-in-out infinite;
+    }
+    .progress.is-kicking{
+      transform-origin:left center;
+      animation:progressKick .32s cubic-bezier(.16, 1, .3, 1) both;
+    }
+    .lite-motion .deck::after,
+    .lite-motion .slide.active:not(.is-entering)::before,
+    .lite-motion .slide.active:not(.is-entering) .eyebrow .dot::after,
+    .lite-motion .slide.active:not(.is-entering) .bullet-icon,
+    .lite-motion .slide.active:not(.is-entering) .step .circle,
+    .lite-motion .slide.active:not(.is-entering) .person-card .initials,
+    .lite-motion .slide.active:not(.is-entering) .avatar,
+    .lite-motion .slide.active:not(.is-entering) .image-frame::after,
+    .lite-motion .slide.active:not(.is-entering) .flow .arrow,
+    .lite-motion .slide.active:not(.is-entering) .hero-device,
+    .lite-motion .slide.active:not(.is-entering) .studio-peek{
+      animation:none !important;
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      *, *::before, *::after{
+        animation-duration:.001ms !important;
+        animation-iteration-count:1 !important;
+        scroll-behavior:auto !important;
+        transition-duration:.001ms !important;
+      }
+    }
+
+    @media (max-width: 980px){
+      body::after{ height:12vh; }
+      .topbar{
+        align-items:flex-start;
+        justify-content:flex-start;
+        flex-wrap:wrap;
+        gap:10px 14px;
+      }
+      .controls{
+        gap:8px;
+        margin-left:52px;
+      }
+      .controls button{
+        padding:9px 12px;
+        font-size:12px;
+      }
+      .slides{ inset:112px 0 70px; }
+      .slide{
+        overflow-x:hidden;
+        overflow-y:auto;
+        padding:38px 24px 30px;
+      }
+      .slide::before{ left:14px; top:28px; bottom:28px; width:4px; }
+      .panel{ padding:24px; }
+      .title-card{
+        align-content:start;
+        min-height:auto;
+      }
+      .team-board{ grid-template-columns:1fr; }
+      .cover-layout{ grid-template-columns:1fr; }
+      .visual-stats{ grid-template-columns:1fr; }
+      .compact-stack{ grid-template-columns:1fr; }
+    }
+
+    @media (max-width: 620px){
+      .app{
+        align-items:stretch;
+        justify-content:flex-start;
+      }
+      .deck{
+        width:min(100%, 390px);
+        max-width:100vw;
+      }
+      .slide{ padding:32px 18px 28px; }
+      .panel{ padding:20px; }
+      h1{ font-size:clamp(1.9rem, 8vw, 2.6rem); }
+      p.lead{ font-size:1rem; }
+      .presentation-meta span{ font-size:12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <div class="app">
+    <div class="deck">
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand-badge">▶</div>
+          <div>
+            <div style="font-size:15px;">Kalpdrushti AI</div>
+            <div style="font-size:12px;color:var(--muted);font-weight:600;">Group Presentation | SY BTech CT Div B</div>
+          </div>
+        </div>
+        <div class="controls">
+          <span class="chip">Use <span class="kbd">←</span> <span class="kbd">→</span> keys</span>
+          <button onclick="toggleFullscreen()" class="primary">Fullscreen</button>
+          <button onclick="prevSlide()">Prev</button>
+          <button onclick="nextSlide()">Next</button>
+        </div>
+      </div>
+
+      <div class="slides">
+
+        <section class="slide active single">
+          <div class="panel title-card">
+            <div class="cover-layout">
+              <div class="cover-copy">
+                <div class="eyebrow"><span class="dot"></span> AI Video Generation Platform</div>
+                <h1><span class="accent">Kalpdrushti AI</span><br>Prompt to Video Generator</h1>
+                <p class="lead">
+                  A full-stack AI platform that transforms a simple text prompt into a complete cinematic video with generated script,
+                  scene visuals, narration, subtitles, motion effects, and mood-aware music.
+                </p>
+
+                <div class="presentation-meta">
+                  <span>Group Presentation</span>
+                  <span>SY BTech CT</span>
+                  <span>Div B</span>
+                </div>
+
+                <div class="team-board">
+                  <div class="person-card">
+                    <span class="initials">AP</span>
+                    <div>
+                      <h4>Abhirath V R Patil</h4>
+                      <p>Roll No. 2024000506</p>
+                    </div>
+                  </div>
+                  <div class="person-card">
+                    <span class="initials">JP</span>
+                    <div>
+                      <h4>Jay Panchal</h4>
+                      <p>Roll No. 2024000507</p>
+                    </div>
+                  </div>
+                  <div class="person-card">
+                    <span class="initials">PD</span>
+                    <div>
+                      <h4>Payal Dhanawde</h4>
+                      <p>Roll No. 2024000508</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cover-media">
+                <figure class="image-frame hero-device">
+                  <img src="presentation-assets/kalpdrushti-landing.png" alt="Kalpdrushti AI landing page screenshot" loading="eager" decoding="async">
+                  <figcaption class="image-caption"><span>Product UI</span><span>Landing</span></figcaption>
+                </figure>
+                <div class="visual-stats">
+                  <div class="visual-stat"><b>Prompt</b><span>Single creative input</span></div>
+                  <div class="visual-stat"><b>Pipeline</b><span>Script, visuals, voice</span></div>
+                  <div class="visual-stat"><b>Export</b><span>Download-ready MP4</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="panel">
+            <div class="eyebrow"><span class="dot"></span> Problem Statement</div>
+            <h2>Creating good videos manually is slow, costly, and skill-heavy.</h2>
+            <p class="lead">For creators, students, educators, and marketers, turning an idea into a video usually means writing a script, collecting visuals, recording voice, adding subtitles, syncing music, and editing everything together.</p>
+            <div class="bullets">
+              <div class="bullet"><div class="bullet-icon">1</div><div><h4>Time consuming</h4><p>Video production requires multiple separate tools and repeated manual effort.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">2</div><div><h4>Requires technical skills</h4><p>Editing, voiceover handling, and rendering are not easy for beginners.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">3</div><div><h4>Not scalable</h4><p>Making many short videos for social media or learning content becomes inefficient.</p></div></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="big-num">01</div>
+            <h2>Core need</h2>
+            <p class="lead">A system that can automatically convert one prompt into a complete video pipeline with minimal human effort.</p>
+            <div class="stats">
+              <div class="stat"><div class="n">1 Prompt</div><div class="l">Single user input</div></div>
+              <div class="stat"><div class="n">Many Assets</div><div class="l">Script, images, voice, subtitles, music</div></div>
+              <div class="stat"><div class="n">Fast Output</div><div class="l">Ready-to-download MP4</div></div>
+              <div class="stat"><div class="n">Creator Friendly</div><div class="l">Useful for content production</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="panel">
+            <div class="eyebrow"><span class="dot"></span> Solution Overview</div>
+            <h2>Kalpdrushti AI automates the entire prompt-to-video journey.</h2>
+            <p class="lead">The user writes a prompt, selects preferences, and the backend generates a structured script, scene visuals, narration, subtitles, transitions, mood-based background music, and the final MP4 video.</p>
+            <div class="flow">
+              <div class="node">Prompt</div><div class="arrow">→</div>
+              <div class="node">Script</div><div class="arrow">→</div>
+              <div class="node">Images</div><div class="arrow">→</div>
+              <div class="node">Voice</div><div class="arrow">→</div>
+              <div class="node">Subtitles</div><div class="arrow">→</div>
+              <div class="node">Music</div><div class="arrow">→</div>
+              <div class="node">Final Video</div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="big-num">02</div>
+            <h2>What makes it strong</h2>
+            <div class="stack">
+              <div class="stack-card"><h4>Full-stack implementation</h4><p>Uses a modern frontend, API backend, database layer, and media rendering pipeline.</p></div>
+              <div class="stack-card"><h4>End-to-end automation</h4><p>Instead of producing only text or images, the project delivers a complete final downloadable video.</p></div>
+              <div class="stack-card"><h4>Practical value</h4><p>Can be applied to education, social media reels, storytelling, product promos, and explainer content.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="panel">
+            <div class="eyebrow"><span class="dot"></span> Project Objectives</div>
+            <h2>Main goals of the system</h2>
+            <div class="timeline">
+              <div class="step"><div class="circle">1</div><div class="text"><b>Automate video generation</b><br>Reduce repeated manual editing tasks by creating a complete pipeline.</div></div>
+              <div class="step"><div class="circle">2</div><div class="text"><b>Save creator time</b><br>Allow users to generate short-form videos much faster than traditional editing.</div></div>
+              <div class="step"><div class="circle">3</div><div class="text"><b>Improve accessibility</b><br>Make video creation easier even for users without strong editing skills.</div></div>
+              <div class="step"><div class="circle">4</div><div class="text"><b>Produce polished output</b><br>Add narration, subtitles, motion, and music for a cinematic feel.</div></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="big-num">03</div>
+            <h2>Expected outcome</h2>
+            <p class="lead">A user-friendly AI platform where one creative idea can turn into a professional-looking final video suitable for sharing or publishing.</p>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="panel">
+            <div class="eyebrow"><span class="dot"></span> Key Features</div>
+            <h2>Major capabilities of Kalpdrushti AI</h2>
+            <div class="bullets">
+              <div class="bullet"><div class="bullet-icon">✓</div><div><h4>Prompt-to-video generation</h4><p>User enters text and receives a completed AI-generated video.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">✓</div><div><h4>Scene-by-scene script generation</h4><p>The system builds a structured script for visuals and narration.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">✓</div><div><h4>AI image generation</h4><p>Each scene gets generated visuals through integrated image providers.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">✓</div><div><h4>Voice narration + subtitles</h4><p>Narration and subtitle files are created automatically.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">✓</div><div><h4>Mood-based background music</h4><p>Music style changes according to emotional tone of the script.</p></div></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="stats" style="margin-top:0;">
+              <div class="stat"><div class="n">AI Script</div><div class="l">Structured storytelling</div></div>
+              <div class="stat"><div class="n">AI Images</div><div class="l">Scene visual generation</div></div>
+              <div class="stat"><div class="n">Edge TTS</div><div class="l">Narrated voiceover</div></div>
+              <div class="stat"><div class="n">MP4 Output</div><div class="l">Download-ready final result</div></div>
+            </div>
+            <div class="stack" style="margin-top:18px;">
+              <div class="stack-card"><h4>User dashboard</h4><p>Tracks generated video jobs and result history for logged-in users.</p></div>
+              <div class="stack-card"><h4>Google / Apple login buttons</h4><p>Frontend includes OAuth-style login flow support.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="panel">
+            <div class="eyebrow"><span class="dot"></span> Technology Stack</div>
+            <h2>Built using a modern full-stack architecture</h2>
+            <div class="table">
+              <div class="th">Area</div><div class="th">Technologies</div>
+              <div class="td">Frontend</div><div class="td">React, Vite, React Router, CSS, lucide-react</div>
+              <div class="td">Backend</div><div class="td">FastAPI, SQLAlchemy, SQLite, Pydantic</div>
+              <div class="td">Script Generation</div><div class="td">OpenAI-compatible chat APIs such as Groq, OpenAI, xAI/Grok, Gemini-compatible setup</div>
+              <div class="td">Image Generation</div><div class="td">Pollinations by default, optional OpenAI image generation</div>
+              <div class="td">Voice</div><div class="td">edge-tts</div>
+              <div class="td">Video Processing</div><div class="td">MoviePy and FFmpeg</div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="big-num">04</div>
+            <h2>Why this stack works</h2>
+            <div class="stack">
+              <div class="stack-card"><h4>Fast UI experience</h4><p>React and Vite provide responsive frontend performance.</p></div>
+              <div class="stack-card"><h4>Clean API backend</h4><p>FastAPI makes route definition, validation, and async handling smooth.</p></div>
+              <div class="stack-card"><h4>Media rendering power</h4><p>MoviePy with FFmpeg enables image, audio, subtitle, and video composition.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="panel">
+            <div class="eyebrow"><span class="dot"></span> System Architecture</div>
+            <h2>High-level architecture of the platform</h2>
+            <div class="flow" style="margin-top:34px;">
+              <div class="node">User</div><div class="arrow">→</div>
+              <div class="node">React / Vite Frontend</div><div class="arrow">→</div>
+              <div class="node">FastAPI Backend</div><div class="arrow">→</div>
+              <div class="node">LLM + Image + TTS Services</div><div class="arrow">→</div>
+              <div class="node">Video Builder</div><div class="arrow">→</div>
+              <div class="node">Media Storage + DB</div><div class="arrow">→</div>
+              <div class="node">Final MP4</div>
+            </div>
+            <p class="lead">The frontend collects prompt data, the backend orchestrates all AI and rendering steps, and generated media is stored locally for retrieval and download.</p>
+          </div>
+          <div class="panel">
+            <div class="big-num">05</div>
+            <h2>Architecture strengths</h2>
+            <div class="bullets">
+              <div class="bullet"><div class="bullet-icon">A</div><div><h4>Modular design</h4><p>Each stage of generation is separated into dedicated modules.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">B</div><div><h4>Trackable pipeline</h4><p>Job status moves through stages like script, images, audio, and rendering.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">C</div><div><h4>Scalable idea</h4><p>Can later be extended with cloud storage, real auth, or managed databases.</p></div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="panel">
+            <div class="eyebrow"><span class="dot"></span> Workflow</div>
+            <h2>How the generation pipeline works</h2>
+            <div class="timeline">
+              <div class="step"><div class="circle">1</div><div class="text"><b>Frontend sends POST /generate</b><br>User data is sent to the backend as multipart/form-data.</div></div>
+              <div class="step"><div class="circle">2</div><div class="text"><b>Database job row is created</b><br>The system records a new generation job with initial pending status.</div></div>
+              <div class="step"><div class="circle">3</div><div class="text"><b>Structured script is generated</b><br>The orchestrator creates scene-wise script content.</div></div>
+              <div class="step"><div class="circle">4</div><div class="text"><b>Images and narration are generated</b><br>Visuals and voice are prepared for each scene.</div></div>
+              <div class="step"><div class="circle">5</div><div class="text"><b>Subtitles and final rendering</b><br>The final MP4 is built with effects, subtitles, voice, and music.</div></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="big-num">06</div>
+            <h2>Job completion</h2>
+            <p class="lead">After rendering, the video is marked as completed, receives a media URL, and becomes available on the dashboard for the user to view or download.</p>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="panel">
+            <div class="eyebrow"><span class="dot"></span> Project Structure</div>
+            <h2>Organized into frontend, backend, and media workspace</h2>
+            <div class="codebox">kalpdrushti/
+├── backend/
+│   ├── main.py
+│   ├── models/
+│   ├── routers/
+│   └── video_pipeline/
+├── frontend/
+│   ├── src/
+│   ├── components/
+│   ├── pages/
+│   └── utils/
+└── media/
+    ├── images/
+    ├── audio/
+    └── videos/</div>
+          </div>
+          <div class="panel">
+            <h2>Purpose of each area</h2>
+            <div class="stack">
+              <div class="stack-card"><h4>Frontend</h4><p>Manages user interface, routing, dashboard access, and interaction pages.</p></div>
+              <div class="stack-card"><h4>Backend</h4><p>Handles APIs, job management, AI orchestration, and media rendering logic.</p></div>
+              <div class="stack-card"><h4>Media Workspace</h4><p>Stores generated images, audio, subtitles, background tracks, and final video files.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="panel">
+            <div class="eyebrow"><span class="dot"></span> API Design</div>
+            <h2>Main endpoints used by the application</h2>
+            <div class="table">
+              <div class="th">Endpoint</div><div class="th">Purpose</div>
+              <div class="td">POST /generate</div><div class="td">Starts a new video generation job</div>
+              <div class="td">GET /videos</div><div class="td">Returns all generated jobs for dashboard history</div>
+              <div class="td">GET /videos/{video_id}</div><div class="td">Checks current status and final video URL</div>
+              <div class="td">POST /abort/{video_id}</div><div class="td">Requests cancellation of a running job</div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="big-num">07</div>
+            <h2>Why API separation matters</h2>
+            <p class="lead">This design keeps the frontend simple and lets the backend handle job control, progress tracking, and final output delivery in a clean way.</p>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="panel">
+            <div class="eyebrow"><span class="dot"></span> Database &amp; Status Tracking</div>
+            <h2>Each generation request is handled like a job</h2>
+            <p class="lead">The database stores prompt data, status, video URL, and timestamps so the system can track each request from start to finish.</p>
+            <div class="bullets">
+              <div class="bullet"><div class="bullet-icon">DB</div><div><h4>Stored data</h4><p>Prompt, status, id, created_at, and final video_url.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">↺</div><div><h4>Processing visibility</h4><p>The frontend can poll job status during processing.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">✓</div><div><h4>User dashboard support</h4><p>Completed jobs can be listed and revisited later.</p></div></div>
+            </div>
+          </div>
+          <div class="panel">
+            <h2>Status values</h2>
+            <div class="stack">
+              <div class="stack-card"><h4>pending</h4><p>Job is created but processing has not started yet.</p></div>
+              <div class="stack-card"><h4>generating_script → generating_images → generating_audio → rendering_video</h4><p>Pipeline moves through each core content generation stage.</p></div>
+              <div class="stack-card"><h4>completed / failed / abort_requested / aborted</h4><p>Represents the final outcome of the job.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="panel">
+            <div class="eyebrow"><span class="dot"></span> Core Pipeline Modules</div>
+            <h2>Separated into specialized backend components</h2>
+            <div class="timeline">
+              <div class="step"><div class="circle">S</div><div class="text"><b>script_generator.py</b><br>Transforms user prompt into structured scene-wise video script.</div></div>
+              <div class="step"><div class="circle">I</div><div class="text"><b>image_generator.py</b><br>Creates or enhances scene images through the selected image provider.</div></div>
+              <div class="step"><div class="circle">V</div><div class="text"><b>voice_generator.py</b><br>Generates narration audio and subtitle files using TTS flow.</div></div>
+              <div class="step"><div class="circle">R</div><div class="text"><b>video_builder.py</b><br>Composes visuals, audio, music, subtitles, and motion into final MP4.</div></div>
+              <div class="step"><div class="circle">O</div><div class="text"><b>orchestrator.py</b><br>Coordinates the full pipeline and updates job status step by step.</div></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="big-num">08</div>
+            <h2>Modular benefit</h2>
+            <p class="lead">This design makes the system easier to maintain, test, upgrade, and troubleshoot because each task is handled by a dedicated component.</p>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="panel">
+            <div class="eyebrow"><span class="dot"></span> Background Music Logic</div>
+            <h2>Mood-aware sound design makes videos feel more cinematic</h2>
+            <p class="lead">The renderer analyzes the generated script text and selects a matching instrumental style. If a suitable custom file is not found, a procedural instrumental track can be generated automatically.</p>
+            <div class="stats">
+              <div class="stat"><div class="n">Emotional</div><div class="l">Soft and expressive tone</div></div>
+              <div class="stat"><div class="n">Excited</div><div class="l">Energetic and high tempo</div></div>
+              <div class="stat"><div class="n">Inspirational</div><div class="l">Uplifting cinematic feel</div></div>
+              <div class="stat"><div class="n">Suspense</div><div class="l">Dark pulse and tension</div></div>
+              <div class="stat"><div class="n">Calm</div><div class="l">Smooth ambient mood</div></div>
+              <div class="stat"><div class="n">Educational</div><div class="l">Clean and neutral support</div></div>
+            </div>
+          </div>
+          <div class="panel">
+            <h2>Why this matters</h2>
+            <div class="stack">
+              <div class="stack-card"><h4>Enhances viewer engagement</h4><p>Music helps shape emotional response and improves perceived quality.</p></div>
+              <div class="stack-card"><h4>Better storytelling</h4><p>Audio mood alignment makes educational or cinematic output more immersive.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="panel">
+            <div class="eyebrow"><span class="dot"></span> Frontend Experience</div>
+            <h2>User-facing pages and interface flow</h2>
+            <div class="stack compact-stack">
+              <div class="stack-card"><h4>Landing Page</h4><p>Introduces the platform and drives users toward prompt creation.</p></div>
+              <div class="stack-card"><h4>Auth Page</h4><p>Supports login UI with Google and Apple buttons.</p></div>
+              <div class="stack-card"><h4>Create Prompt Page</h4><p>Collects prompt and user generation settings such as aspect ratio and duration.</p></div>
+              <div class="stack-card"><h4>Processing Page</h4><p>Shows progress while frontend polls the backend for job status.</p></div>
+              <div class="stack-card"><h4>Result + Dashboard</h4><p>Displays final video and history of previous generated jobs.</p></div>
+            </div>
+          </div>
+          <div class="panel">
+            <figure class="image-frame slide-screenshot">
+              <img src="presentation-assets/kalpdrushti-studio.png" alt="Kalpdrushti AI create prompt studio page screenshot" loading="eager" decoding="async">
+              <figcaption class="image-caption"><span>Prompt Studio</span><span>Live UI</span></figcaption>
+            </figure>
+            <h2>Frontend value</h2>
+            <p class="lead">The UI turns a technically complex backend into a simple product experience for everyday users.</p>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="panel">
+            <div class="eyebrow"><span class="dot"></span> Security &amp; Production Readiness</div>
+            <h2>Important checks before public deployment</h2>
+            <div class="bullets">
+              <div class="bullet"><div class="bullet-icon">!</div><div><h4>Do not expose secrets</h4><p>API keys and sensitive configuration must stay in backend environment variables only.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">✓</div><div><h4>Verify OAuth on backend</h4><p>Frontend login state alone is not enough for secure production use.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">🛡</div><div><h4>Restrict CORS</h4><p>Only the real frontend domain should be allowed in public deployment.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">DB</div><div><h4>Scale storage</h4><p>Local SQLite and filesystem are useful for prototype stage but should be upgraded for serious multi-user production.</p></div></div>
+            </div>
+          </div>
+          <div class="panel">
+            <h2>Why include this in presentation</h2>
+            <p class="lead">Mentioning security and deployment maturity makes your project sound more professional, realistic, and industry-aware.</p>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="panel">
+            <div class="eyebrow"><span class="dot"></span> Advantages</div>
+            <h2>Why this project is impactful</h2>
+            <div class="bullets">
+              <div class="bullet"><div class="bullet-icon">1</div><div><h4>Time saving</h4><p>Automates multiple content creation tasks into one pipeline.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">2</div><div><h4>User friendly</h4><p>People without advanced editing skills can still create videos.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">3</div><div><h4>Content scalability</h4><p>Creators can produce more short videos in less time.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">4</div><div><h4>Practical full-stack learning</h4><p>Combines frontend, backend, AI APIs, TTS, and multimedia rendering.</p></div></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="big-num">10</div>
+            <h2>Use cases</h2>
+            <div class="stack">
+              <div class="stack-card"><h4>Education</h4><p>AI-generated explainers, topic summaries, and learning reels.</p></div>
+              <div class="stack-card"><h4>Social Media</h4><p>Short storytelling, quote videos, cinematic reels, or viral concept videos.</p></div>
+              <div class="stack-card"><h4>Marketing</h4><p>Quick product intros, demos, and promotional concept videos.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="panel">
+            <div class="eyebrow"><span class="dot"></span> Limitations</div>
+            <h2>Current constraints of the project</h2>
+            <div class="timeline">
+              <div class="step"><div class="circle">1</div><div class="text"><b>Internet dependency</b><br>Hosted AI services and OAuth flows need working network connectivity.</div></div>
+              <div class="step"><div class="circle">2</div><div class="text"><b>Rate limiting</b><br>Public image generation endpoints can return 429 errors during heavy usage.</div></div>
+              <div class="step"><div class="circle">3</div><div class="text"><b>Rendering time</b><br>Longer or more complex videos require more processing time.</div></div>
+              <div class="step"><div class="circle">4</div><div class="text"><b>Prototype storage model</b><br>Local filesystem and SQLite are simple but not ideal for large-scale production.</div></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="big-num">11</div>
+            <h2>Honest project evaluation</h2>
+            <p class="lead">Including realistic limitations improves the credibility of your presentation and shows proper technical understanding.</p>
+          </div>
+        </section>
+
+        <section class="slide">
+          <div class="panel">
+            <div class="eyebrow"><span class="dot"></span> Future Scope</div>
+            <h2>How Kalpdrushti AI can be expanded further</h2>
+            <div class="bullets">
+              <div class="bullet"><div class="bullet-icon">+</div><div><h4>Real-time preview generation</h4><p>Show draft visual flow before final rendering.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">+</div><div><h4>Multi-language support</h4><p>Generate narration and subtitles in more languages.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">+</div><div><h4>Editable scene customization</h4><p>Let users change individual scenes before exporting final video.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">+</div><div><h4>Cloud deployment</h4><p>Move storage, database, and rendering pipeline to scalable cloud infrastructure.</p></div></div>
+              <div class="bullet"><div class="bullet-icon">+</div><div><h4>Mobile app version</h4><p>Bring prompt-to-video generation to handheld devices.</p></div></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="big-num">12</div>
+            <h2>Potential impact</h2>
+            <p class="lead">With these upgrades, the project can evolve from an academic prototype into a usable creator platform.</p>
+          </div>
+        </section>
+
+        <section class="slide single">
+          <div class="panel title-card">
+            <div class="eyebrow"><span class="dot"></span> Conclusion</div>
+            <h1>Kalpdrushti AI shows how one prompt can become a complete video product.</h1>
+            <p class="lead">
+              This project combines frontend development, backend engineering, AI integration, speech synthesis, media composition, and user experience design into one practical full-stack application.
+            </p>
+            <p class="quote">“It is not just a website — it is an automated creative pipeline.”</p>
+            <div class="hero-grid">
+              <div class="mini"><h4>Technical Strength</h4><p>Demonstrates integration of React, FastAPI, SQLite, AI APIs, TTS, MoviePy, and FFmpeg.</p></div>
+              <div class="mini"><h4>Real-world Value</h4><p>Useful for content creation, education, social media, storytelling, and video automation.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide single">
+          <div class="panel title-card" style="text-align:center;">
+            <div class="eyebrow" style="margin-inline:auto;"><span class="dot"></span> Thank You</div>
+            <h1 style="font-size:clamp(2.5rem, 5vw, 5rem);">Thank You</h1>
+            <p class="lead" style="margin-inline:auto; max-width:800px;">
+              Questions, feedback, or suggestions are welcome.
+            </p>
+            <div class="hero-grid" style="max-width:900px; margin-inline:auto;">
+              <div class="mini"><h4>Presented By</h4><p>Abhirath V R Patil - 2024000506<br>Jay Panchal - 2024000507<br>Payal Dhanawde - 2024000508</p></div>
+              <div class="mini"><h4>Project</h4><p>Kalpdrushti AI – Prompt to Video Generator</p></div>
+            </div>
+            <div class="presentation-meta" style="justify-content:center;">
+              <span>SY BTech CT</span>
+              <span>Div B</span>
+              <span>Group Presentation</span>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <div class="footer">
+        <div class="pager">
+          <span id="slideNum">1</span>
+          <span>/</span>
+          <span id="totalSlides">20</span>
+        </div>
+        <div class="progress-wrap"><div class="progress" id="progress"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const progress = document.getElementById('progress');
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let current = slides.findIndex(slide => slide.classList.contains('active'));
+    if (current < 0) current = 0;
+    let enterTimer = 0;
+    let exitTimer = 0;
+    let progressKickAnimation = null;
+    let motionWatchFrame = 0;
+
+    document.getElementById('totalSlides').textContent = slides.length;
+
+    function watchMotionBudget(){
+      if (motionQuery.matches || document.documentElement.classList.contains('lite-motion')) return;
+      cancelAnimationFrame(motionWatchFrame);
+      let frames = 0;
+      let slowFrames = 0;
+      let last = performance.now();
+
+      const tick = (now) => {
+        const delta = now - last;
+        if (delta > 42) slowFrames += 1;
+        frames += 1;
+        last = now;
+
+        if (frames < 120) {
+          motionWatchFrame = requestAnimationFrame(tick);
+        } else if (slowFrames > 12) {
+          document.documentElement.classList.add('lite-motion');
+        }
+      };
+
+      motionWatchFrame = requestAnimationFrame(tick);
+    }
+
+    function kickProgress(){
+      if (motionQuery.matches || !progress.animate) return;
+      progressKickAnimation?.cancel();
+      progressKickAnimation = progress.animate([
+        { transform:'scaleY(1)' },
+        { transform:'scaleY(1.55)', offset:.45 },
+        { transform:'scaleY(1)' }
+      ], {
+        duration:320,
+        easing:'cubic-bezier(.16, 1, .3, 1)'
+      });
+    }
+
+    function showSlide(i){
+      clearTimeout(enterTimer);
+      clearTimeout(exitTimer);
+      cancelAnimationFrame(motionWatchFrame);
+
+      const next = (i + slides.length) % slides.length;
+      const previousSlide = slides[current];
+      const activeSlide = slides[next];
+
+      slides.forEach((slide) => {
+        if (slide !== previousSlide && slide !== activeSlide) {
+          slide.classList.remove('active', 'is-entering', 'is-exiting');
+        }
+      });
+
+      if (previousSlide && previousSlide !== activeSlide) {
+        previousSlide.classList.remove('active', 'is-entering');
+        previousSlide.classList.add('is-exiting');
+        exitTimer = window.setTimeout(() => previousSlide.classList.remove('is-exiting'), 320);
+      }
+
+      current = next;
+      activeSlide.classList.remove('is-exiting', 'is-entering');
+      activeSlide.classList.add('active');
+      requestAnimationFrame(() => {
+        if (slides[current] === activeSlide) activeSlide.classList.add('is-entering');
+      });
+      enterTimer = window.setTimeout(() => {
+        activeSlide.classList.remove('is-entering');
+        watchMotionBudget();
+      }, 760);
+      document.getElementById('slideNum').textContent = current + 1;
+      const percent = ((current + 1) / slides.length) * 100;
+      progress.style.width = percent + '%';
+      kickProgress();
+    }
+
+    function nextSlide(){ showSlide(current + 1); }
+    function prevSlide(){ showSlide(current - 1); }
+
+    async function toggleFullscreen(){
+      const el = document.documentElement;
+      if (!document.fullscreenElement) {
+        await el.requestFullscreen?.();
+      } else {
+        await document.exitFullscreen?.();
+      }
+    }
+
+    window.nextSlide = nextSlide;
+    window.prevSlide = prevSlide;
+    window.toggleFullscreen = toggleFullscreen;
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') nextSlide();
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') prevSlide();
+      if (e.key.toLowerCase() === 'f') toggleFullscreen();
+      if (e.key === 'Home') showSlide(0);
+      if (e.key === 'End') showSlide(slides.length - 1);
+    });
+
+    let touchStartX = 0;
+    document.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, {passive:true});
+    document.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].screenX - touchStartX;
+      if (dx < -40) nextSlide();
+      if (dx > 40) prevSlide();
+    }, {passive:true});
+
+    const requestedSlide = Number(new URLSearchParams(window.location.search).get('slide'));
+    showSlide(Number.isInteger(requestedSlide) && requestedSlide > 0 ? requestedSlide - 1 : 0);
+  </script>
+</body>
+</html>
